@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, layout, space } from '../theme';
-import { initials, useAuth } from '../lib/auth';
+import { initials, isStaff, useAuth } from '../lib/auth';
 import { Avatar } from './Avatar';
 import { Logo } from './Logo';
 
@@ -38,7 +38,9 @@ export function Header({ onBack }: { onBack?: () => void }) {
         ) : null}
         <Logo />
       </View>
-      {session ? <Avatar label={initials(profile)} size={36} onPress={() => router.navigate('/profile')} /> : null}
+      {session ? (
+        <Avatar label={initials(profile)} size={36} onPress={() => router.navigate(isStaff(profile) ? '/account' : '/profile')} />
+      ) : null}
     </View>
   );
 }

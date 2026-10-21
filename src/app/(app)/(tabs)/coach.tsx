@@ -35,14 +35,6 @@ export default function Coach() {
         <Text variant="small">Feedback to help you get ready for work. You always write your own words.</Text>
       </View>
 
-      {!student ? (
-        <Card large onPress={() => router.navigate('/application')} style={{ gap: space.sm }}>
-          <Feather name="edit-3" size={22} color={colors.accentOrange} />
-          <Text variant="h3">Tips on your motivational letter</Text>
-          <Text variant="small">Upload your letter in your application, then tap "Get tips on my letter".</Text>
-        </Card>
-      ) : null}
-
       {(Object.keys(coachTools) as CoachKind[]).map((kind) => {
         const tool = coachTools[kind];
         return (

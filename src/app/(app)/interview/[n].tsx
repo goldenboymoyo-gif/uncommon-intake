@@ -4,6 +4,7 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Header } from '../../../components/Header';
 import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
+import { AiLabel } from '../../../components/AiLabel';
 import { Card } from '../../../components/Card';
 import { Input } from '../../../components/Input';
 import { StepProgress } from '../../../components/StepProgress';
@@ -89,6 +90,7 @@ export default function InterviewQuestion() {
       >
         <StepProgress current={n} total={QUESTION_COUNT} label="Question" />
         <Card large tone="soft">
+          {question.ai_generated ? <AiLabel note="question written from your CV" /> : null}
           <Text variant="h2">{question.prompt}</Text>
         </Card>
 

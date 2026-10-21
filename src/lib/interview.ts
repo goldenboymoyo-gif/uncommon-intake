@@ -16,13 +16,27 @@ export async function fetchInterview(userId: string): Promise<InterviewData | nu
   const intake = await fetchCurrentIntake();
   if (!intake) return null;
   const app = await getOrCreateApplication(intake.id, userId);
-  const [{ data: questions }, { data: answers }] = await Promise.all([
-    supabase.from('interview_questions').select('id, position, prompt').eq('intake_id', intake.id).order('position'),
+  const [questions, { data: answers }] = await Promise.all([
+    fetchQuestions(app.id, intake.id),
     supabase.from('interview_answers').select('*').eq('application_id', app.id),
   ]);
   const byQuestion: Record<string, InterviewAnswer> = {};
   (answers ?? []).forEach((a: InterviewAnswer) => (byQuestion[a.question_id] = a));
-  return { app, questions: (questions ?? []) as InterviewQuestion[], answers: byQuestion };
+  return { app, questions, answers: byQuestion };
+}
+
+/** This applicant's own questions (written by AI from their CV), or shared intake questions if staff set any. */
+export async function fetchQuestions(applicationId: string, intakeId: string): Promise<InterviewQuestion[]> {
+  const cols = 'id, position, prompt, ai_generated, based_on';
+  const { data: own } = await supabase.from('interview_questions').select(cols).eq('application_id', applicationId).order('position');
+  if (own?.length) return own as InterviewQuestion[];
+  const { data: shared } = await supabase
+    .from('interview_questions')
+    .select(cols)
+    .eq('intake_id', intakeId)
+    .is('application_id', null)
+    .order('position');
+  return (shared ?? []) as InterviewQuestion[];
 }
 
 export const formatTime = (seconds: number) =>

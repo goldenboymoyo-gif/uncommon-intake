@@ -10,9 +10,12 @@ Solo capstone project. React Native with Expo, TypeScript, Expo Router and Supab
 **Applicants**
 - Home with the intake, graduate stories (only real, consented, staff-approved ones) and "How it works".
 - Sign up with name, phone or WhatsApp, and email. Sign in with a code sent by email. No passwords.
-- A 7 step application form with autosave, "Save and finish later", and a review screen before sending.
-  Step 1 is built in. Steps 2 to 7 load from the `form_questions` table.
-- Motivational letter upload (PDF or Word, up to 5MB) with AI tips. The AI never writes or rewrites the letter.
+- A 2 step application with autosave, "Save and finish later", and a review screen before sending:
+  1. Your details: name, email, phone or WhatsApp, where you live, and a hub (from the `hubs` table).
+  2. Your CV: PDF or Word, up to 5MB. No CV? Applicants can write a short "about you" instead.
+- After sending, AI reads the CV and writes 5 professional interview questions about that person's own
+  experience (`generate-questions` Edge Function). It runs once per applicant and never asks about age,
+  gender, family, religion, health, background or politics. Staff see which part of the CV each question came from.
 - A consent screen before the interview, then 5 questions answered by text, audio (waveform and timer)
   or short video. Answers are saved on the phone first and uploaded when the network allows.
   Low data mode gives smaller audio files and turns video off.
@@ -25,7 +28,7 @@ Solo capstone project. React Native with Expo, TypeScript, Expo Router and Supab
 
 **Staff** (accounts created by an admin only)
 - Review board with status chips, search and filters. Two columns on tablets.
-- Applicant detail: form answers, letter, interview answers, transcripts, AI summaries, audio and video playback, notes.
+- Applicant detail: details, hub, CV, the AI-written questions, interview answers, transcripts, AI summaries, audio and video playback, notes.
 - Accept, Waitlist or Decline with a confirmation screen. Mark "Needs help" for hub assisted mode.
 - Overview counted from real rows only: applied, interviewed, accepted, places left, applications by hub, job outcomes.
 - Surveys: create, see results, and AI themes that always link back to the raw answers.
@@ -116,8 +119,9 @@ npx supabase secrets set --env-file supabase/functions/.env
 
 ### 4. Real intake content
 
-The app never guesses questions. Copy `supabase/setup/intake_setup_template.sql`, fill in
-Uncommon's real form questions, interview questions, checklist, hubs and places, and run it.
+Interview questions are written per applicant from their CV, so no question list is needed. Staff still
+set up the intake itself (year, dates, places) and, optionally, a review checklist. See
+`supabase/setup/intake_setup_template.sql`.
 That file also shows how to make someone staff and how to publish a consented graduate story.
 
 ### 5. Test accounts (development only)
@@ -128,7 +132,7 @@ SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY=<local service key
 ```
 
 Creates "Test Applicant 1" to "Test Applicant 3", "Test Student 1" and "Test Staff 1" with
-`@example.test` emails. Add `-- --with-test-form` for a labelled test intake so you can click
+`@example.test` emails. Add `-- --with-test-intake` for an open test intake so you can click
 through the form and interview locally. Delete it before going live.
 
 ## Build and release

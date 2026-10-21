@@ -6,7 +6,7 @@ import { Text } from './Text';
 const sections = [
   {
     title: 'What we collect',
-    body: 'Your name, phone or WhatsApp number, email, the answers in your application form, your motivational letter, and your interview answers. We only ask for what we need to review your application.',
+    body: 'Your name, email, phone or WhatsApp number, where you live, the hub you choose, your CV (or what you write about yourself), and your interview answers. We only ask for what we need to review your application.',
   },
   {
     title: 'Who can see it',
@@ -14,11 +14,11 @@ const sections = [
   },
   {
     title: 'How we use AI',
-    body: 'AI turns spoken answers into text, gives you suggestions on your letter, and writes short summaries of your answers for staff. All AI text is marked "AI generated". The AI never decides who gets a place. People decide.',
+    body: 'AI reads your CV to write 5 interview questions about your own experience, turns spoken answers into text, and writes short summaries of your answers for staff. All AI text is marked "AI generated". The AI never decides who gets a place. People decide.',
   },
   {
     title: 'What the AI does not do',
-    body: 'It does not look at your face, judge your voice or tone, or guess your feelings. It only works with the words you write or say.',
+    body: 'It does not score your CV, look at your face, judge your voice or tone, or guess your feelings. It only works with the words you write or say.',
   },
   {
     title: 'How long we keep recordings',

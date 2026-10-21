@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from './supabase';
 import { useAuth } from './auth';
-import type { Application, GraduateStory, Intake } from './types';
+import type { Application, GraduateStory, Hub, Intake } from './types';
 
 /** Small loader: runs `fn` on mount and whenever the screen comes back into focus. */
 export function useQuery<T>(fn: () => Promise<T>, deps: unknown[] = []) {
@@ -99,6 +99,13 @@ export async function getOrCreateApplication(intakeId: string, userId: string) {
     .single();
   if (error) throw error;
   return data as Application;
+}
+
+/** The real Uncommon hubs, from the hubs table. */
+export async function fetchHubs(): Promise<Hub[]> {
+  const { data, error } = await supabase.from('hubs').select('id, name, area, city, status').neq('status', 'closed').order('city').order('name');
+  if (error) throw error;
+  return (data ?? []) as Hub[];
 }
 
 export function useUnreadCount() {

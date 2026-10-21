@@ -33,13 +33,14 @@ export type Application = {
   hub_id: string | null;
   first_names: string;
   surname: string;
-  gender: string | null;
-  date_of_birth: string | null;
   phone: string;
   email: string;
+  location: string;
   current_step: number;
-  letter_path: string | null;
-  letter_name: string | null;
+  cv_path: string | null;
+  cv_name: string | null;
+  about_text: string | null;
+  questions_ready_at: string | null;
   ai_notice_seen_at: string | null;
   submitted_at: string | null;
   interview_format: AnswerFormat | null;
@@ -54,18 +55,15 @@ export type Application = {
   created_at: string;
 };
 
-export type FormQuestion = {
+export type InterviewQuestion = {
   id: string;
-  step: number;
   position: number;
-  label: string;
-  help_text: string | null;
-  kind: 'short_text' | 'long_text' | 'single_choice' | 'multi_choice' | 'date' | 'number' | 'yes_no' | 'letter_upload';
-  options: string[];
-  required: boolean;
+  prompt: string;
+  ai_generated?: boolean;
+  based_on?: string | null;
 };
 
-export type InterviewQuestion = { id: string; position: number; prompt: string };
+export type Hub = { id: string; name: string; area: string | null; city: string | null; status: 'open' | 'coming_soon' | 'closed' };
 
 export type Suggestions = {
   strengths: string[];

@@ -20,7 +20,7 @@ type Stage = { title: string; body: string; date?: string | null; done: boolean 
 function stages(app: Application): Stage[] {
   const reviewStarted = app.review_status === 'in_review' || app.review_status === 'needs_help' || !!app.decision;
   return [
-    { title: 'Application received', body: 'We have your form and letter.', date: app.submitted_at, done: !!app.submitted_at },
+    { title: 'Application received', body: 'We have your details and your CV.', date: app.submitted_at, done: !!app.submitted_at },
     { title: 'Interview answers sent', body: 'We have your 5 answers.', date: app.interview_sent_at, done: !!app.interview_sent_at },
     { title: 'Review by staff', body: 'A member of our team reads your application and answers.', done: reviewStarted },
     { title: 'Decision', body: 'We will tell you in the app, with a notification, and by email.', date: app.decided_at, done: !!app.decision },

@@ -1,7 +1,8 @@
 import type { Href } from 'expo-router';
 import type { Application } from './types';
 
-export const TOTAL_STEPS = 7;
+export const TOTAL_STEPS = 2;
+export const STEP_TITLES: Record<number, string> = { 1: 'Your details', 2: 'Your CV' };
 
 export type NextStep = { title: string; body: string; action: string; href: Href };
 
@@ -18,7 +19,7 @@ export function nextStep(app: Application | null): NextStep {
   if (!app.submitted_at && app.current_step > TOTAL_STEPS) {
     return {
       title: 'Check and send',
-      body: 'All 7 steps are done. Check your answers, then send your application.',
+      body: 'Both steps are done. Check your details, then send your application.',
       action: 'Review your application',
       href: '/application/review',
     };

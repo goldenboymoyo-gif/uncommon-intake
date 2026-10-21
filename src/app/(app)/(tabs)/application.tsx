@@ -10,15 +10,13 @@ import { EmptyState } from '../../../components/EmptyState';
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, formatDate, getOrCreateApplication, useMyApplication, useQuery } from '../../../lib/data';
-import { fetchFormSetup, stepTitle } from '../../../lib/form';
-import { TOTAL_STEPS } from '../../../lib/progress';
+import { STEP_TITLES, TOTAL_STEPS } from '../../../lib/progress';
 import { colors, space } from '../../../theme';
 
 export default function ApplicationTab() {
   const { profile } = useAuth();
   const { data: app, loading, reload } = useMyApplication();
   const { data: intake } = useQuery(fetchCurrentIntake);
-  const { data: setup } = useQuery(async () => (intake ? fetchFormSetup(intake.id) : null), [intake?.id]);
   const [starting, setStarting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -55,14 +53,14 @@ export default function ApplicationTab() {
         <Text variant="small">
           {app?.submitted_at
             ? `Sent on ${formatDate(app.submitted_at)}. You can no longer change it.`
-            : '7 steps. Your answers save as you go, so you can finish later.'}
+            : '2 short steps. Your answers save as you go, so you can finish later.'}
         </Text>
       </View>
 
       {!app ? (
         <Card large>
           <Text variant="h2">Ready to apply?</Text>
-          <Text variant="small">Have your motivational letter ready as a PDF or Word file (up to 5MB).</Text>
+          <Text variant="small">Have your CV ready as a PDF or Word file (up to 5MB). No CV? You can write about yourself instead.</Text>
           <Button title="Start application" loading={starting} onPress={start} haptic />
           {error ? <Text variant="small" style={{ color: colors.danger }}>{error}</Text> : null}
         </Card>
@@ -82,7 +80,7 @@ export default function ApplicationTab() {
                   {done ? <Feather name="check" size={16} color={colors.success} /> : <Text variant="smallSemi" style={{ color: isCurrent ? colors.white : colors.muted }}>{n}</Text>}
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text variant="bodySemi">{stepTitle(setup ?? null, n)}</Text>
+                  <Text variant="bodySemi">{STEP_TITLES[n]}</Text>
                 </View>
                 {isCurrent ? <Chip label="Next" tone="brand" /> : null}
                 {!locked && !app.submitted_at ? <Feather name="chevron-right" size={20} color={colors.muted} /> : null}

@@ -8,7 +8,7 @@
 //
 // Usage:
 //   node scripts/dev-seed.mjs                  test accounts only
-//   node scripts/dev-seed.mjs --with-test-form also a "Test intake" with labelled test questions
+//   node scripts/dev-seed.mjs --with-test-intake also an open "Test intake" to click through locally
 //
 // Reads SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from the environment or .env.development.local.
 import { readFileSync, existsSync } from 'node:fs';
@@ -70,30 +70,16 @@ for (const a of accounts) {
   console.log(`ok  ${a.first_names} ${a.surname}  <${a.email}>  role=${a.role}  id=${u.id}`);
 }
 
-if (args.has('--with-test-form')) {
+if (args.has('--with-test-intake')) {
+  // An open test intake so you can click through the form locally. Interview questions are written
+  // by AI from each applicant's CV, so none are added here.
   const { data: intake, error } = await db
     .from('intakes')
     .upsert({ year: 1999, title: 'Test intake (development only)', is_open: true }, { onConflict: 'year' })
     .select()
     .single();
   if (error) throw error;
-
-  await db.from('form_steps').delete().eq('intake_id', intake.id);
-  await db.from('form_questions').delete().eq('intake_id', intake.id);
-  await db.from('interview_questions').delete().eq('intake_id', intake.id);
-  await db.from('review_checklist').delete().eq('intake_id', intake.id);
-
-  const steps = [2, 3, 4, 5, 6, 7];
-  await db.from('form_steps').insert(steps.map((step) => ({ intake_id: intake.id, step, title: `Test step ${step}` })));
-  await db.from('form_questions').insert(
-    steps.map((step) => ({ intake_id: intake.id, step, position: 0, label: `Test question for step ${step}`, kind: 'short_text' })),
-  );
-  await db.from('form_questions').insert({ intake_id: intake.id, step: 7, position: 1, label: 'Test letter upload', kind: 'letter_upload' });
-  await db.from('interview_questions').insert(
-    [1, 2, 3, 4, 5].map((position) => ({ intake_id: intake.id, position, prompt: `Test interview question ${position}` })),
-  );
-  await db.from('review_checklist').insert({ intake_id: intake.id, position: 0, item: 'Test checklist item' });
-  console.log(`ok  Test intake (year 1999) with labelled test questions. Delete it before going live.`);
+  console.log(`ok  Test intake (year 1999, id ${intake.id}). Delete it before going live.`);
 }
 
 console.log('\nSign in with any test email. Codes for local Supabase arrive in Inbucket/Mailpit (http://127.0.0.1:54324).');

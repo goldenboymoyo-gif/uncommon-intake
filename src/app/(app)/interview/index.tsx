@@ -12,7 +12,7 @@ import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
 import { useQuery } from '../../../lib/data';
 import { fetchInterview, QUESTION_COUNT } from '../../../lib/interview';
-import { supabase } from '../../../lib/supabase';
+import { callFunction, supabase } from '../../../lib/supabase';
 import { runQueue, useUploadQueue } from '../../../lib/uploadQueue';
 import { colors, space } from '../../../theme';
 
@@ -23,10 +23,32 @@ export default function InterviewOverview() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [preparing, setPreparing] = useState(false);
+
   // When the queue finishes sending something, refresh the list.
   useEffect(() => {
     reload();
   }, [queue.length]);
+
+  // Questions are written from the CV when the application is sent. If that did not finish, ask again.
+  async function prepareQuestions() {
+    if (!data?.app.submitted_at) return;
+    setPreparing(true);
+    setError(null);
+    try {
+      await callFunction('generate-questions', { application_id: data.app.id });
+      await reload();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setPreparing(false);
+    }
+  }
+
+  const needsQuestions = !!data && !!data.app.submitted_at && data.questions.length < QUESTION_COUNT;
+  useEffect(() => {
+    if (needsQuestions && !preparing) prepareQuestions();
+  }, [needsQuestions]);
 
   if (!data) return <View style={{ flex: 1 }}><Header onBack={() => router.back()} /></View>;
   const { app, questions, answers } = data;
@@ -92,11 +114,20 @@ export default function InterviewOverview() {
       >
         <View style={{ gap: space.xs }}>
           <Text variant="h1">Your interview</Text>
-          <Text variant="small">5 questions. Answer them in any order. Tap a question to answer or change it.</Text>
+          <Text variant="small">
+            5 questions about your own experience, written by AI from your CV. Answer them in any order. Tap a question to answer or change it.
+          </Text>
         </View>
 
         {notReady ? (
-          <EmptyState icon="clock" title="The interview questions are not ready yet" body="We will send you a notification when you can start." />
+          <>
+            <EmptyState
+              icon="clock"
+              title={preparing ? 'Writing your questions…' : 'Your questions are not ready yet'}
+              body={preparing ? 'This takes a few seconds.' : 'Tap below to try again. If it keeps failing, contact the Uncommon team.'}
+            />
+            {!preparing && app.submitted_at ? <Button title="Try again" variant="outline" icon="refresh-cw" onPress={prepareQuestions} /> : null}
+          </>
         ) : (
           questions.map((q) => {
             const s = statusFor(q.id);

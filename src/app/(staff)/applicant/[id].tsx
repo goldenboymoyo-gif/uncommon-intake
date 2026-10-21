@@ -14,9 +14,10 @@ import { Text } from '../../../components/Text';
 import { peopleDecide } from '../../../content';
 import { useAuth } from '../../../lib/auth';
 import { formatDate, useQuery } from '../../../lib/data';
-import { fetchAnswers, fetchFormSetup, isAnswered, stepTitle } from '../../../lib/form';
+import { fetchQuestions } from '../../../lib/interview';
+import { STEP_TITLES } from '../../../lib/progress';
 import { callFunction, supabase } from '../../../lib/supabase';
-import type { Application, InterviewAnswer, InterviewQuestion } from '../../../lib/types';
+import type { Application, InterviewAnswer } from '../../../lib/types';
 import { colors, layout, radius, space } from '../../../theme';
 
 type Note = { id: string; note: string; created_at: string; profiles: { first_names: string; surname: string } | null };
@@ -26,18 +27,16 @@ async function load(id: string) {
   const { data: app, error } = await supabase.from('applications').select('*').eq('id', id).single();
   if (error) throw error;
   const a = app as Application;
-  const [setup, formAnswers, { data: questions }, { data: answers }, { data: notes }] = await Promise.all([
-    fetchFormSetup(a.intake_id),
-    fetchAnswers(a.id),
-    supabase.from('interview_questions').select('id, position, prompt').eq('intake_id', a.intake_id).order('position'),
+  const [questions, { data: hub }, { data: answers }, { data: notes }] = await Promise.all([
+    fetchQuestions(a.id, a.intake_id),
+    a.hub_id ? supabase.from('hubs').select('name, city').eq('id', a.hub_id).single() : Promise.resolve({ data: null }),
     supabase.from('interview_answers').select('*').eq('application_id', a.id),
     supabase.from('staff_notes').select('id, note, created_at, profiles(first_names, surname)').eq('application_id', a.id).order('created_at', { ascending: false }),
   ]);
   return {
     app: a,
-    setup,
-    formAnswers,
-    questions: (questions ?? []) as InterviewQuestion[],
+    hub: hub as { name: string; city: string | null } | null,
+    questions,
     answers: (answers ?? []) as InterviewAnswer[],
     notes: (notes ?? []) as unknown as Note[],
   };
@@ -53,7 +52,7 @@ export default function ApplicantDetail() {
   const [error, setError] = useState<string | null>(null);
 
   if (!data) return <View style={{ flex: 1 }}><Header onBack={() => router.back()} /></View>;
-  const { app, setup, formAnswers, questions, answers, notes } = data;
+  const { app, hub, questions, answers, notes } = data;
   const chip = reviewStatusChip[app.review_status];
   const decided = !!app.decision;
 
@@ -75,9 +74,9 @@ export default function ApplicantDetail() {
     reload();
   }
 
-  async function openLetter() {
-    if (!app.letter_path) return;
-    const { data: signed } = await supabase.storage.from('letters').createSignedUrl(app.letter_path, 60 * 10);
+  async function openCv() {
+    if (!app.cv_path) return;
+    const { data: signed } = await supabase.storage.from('application-cvs').createSignedUrl(app.cv_path, 60 * 10);
     if (signed?.signedUrl) Linking.openURL(signed.signedUrl);
   }
 
@@ -166,7 +165,7 @@ export default function ApplicantDetail() {
 
         {tab === 'answers' ? (
           questions.length === 0 ? (
-            <Text variant="small">No interview questions are set up for this intake yet.</Text>
+            <Text variant="small">{app.submitted_at ? 'The questions have not been written yet.' : 'Questions are written after the application is sent.'}</Text>
           ) : (
             questions.map((q) => {
               const a = answers.find((x) => x.question_id === q.id);
@@ -174,6 +173,7 @@ export default function ApplicantDetail() {
                 <Card key={q.id} large style={{ gap: space.md }}>
                   <Text variant="tiny">QUESTION {q.position}</Text>
                   <Text variant="h3">{q.prompt}</Text>
+                  {q.ai_generated ? <AiLabel note={q.based_on ? `written from the CV: ${q.based_on}` : 'written from the CV'} /> : null}
                   {!a ? (
                     <Text variant="small">Not answered yet.</Text>
                   ) : (
@@ -220,26 +220,22 @@ export default function ApplicantDetail() {
         {tab === 'form' ? (
           <>
             <Card style={{ gap: space.md }}>
-              <Text variant="h3">{stepTitle(setup, 1)}</Text>
-              <Row label="Gender" value={app.gender ?? 'Not answered'} />
-              <Row label="Date of birth" value={app.date_of_birth ? formatDate(app.date_of_birth) : 'Not answered'} />
-              <Row label="Phone or WhatsApp" value={app.phone} />
+              <Text variant="h3">{STEP_TITLES[1]}</Text>
               <Row label="Email" value={app.email} />
+              <Row label="Phone or WhatsApp" value={app.phone} />
+              <Row label="Where they live" value={app.location || 'Not filled in'} />
+              <Row label="Hub" value={hub ? `${hub.name}${hub.city ? `, ${hub.city}` : ''}` : 'Not chosen'} />
             </Card>
-            {[2, 3, 4, 5, 6, 7].map((step) => {
-              const qs = setup.questions.filter((q) => q.step === step && q.kind !== 'letter_upload');
-              if (!qs.length) return null;
-              return (
-                <Card key={step} style={{ gap: space.md }}>
-                  <Text variant="h3">{stepTitle(setup, step)}</Text>
-                  {qs.map((q) => {
-                    const v = formAnswers[q.id];
-                    return <Row key={q.id} label={q.label} value={Array.isArray(v) ? v.join(', ') : isAnswered(v) ? String(v) : 'Not answered'} />;
-                  })}
-                </Card>
-              );
-            })}
-            <Button title={app.letter_path ? 'Open motivational letter' : 'No letter uploaded'} variant="outline" icon="file-text" disabled={!app.letter_path} onPress={openLetter} />
+            <Card style={{ gap: space.md }}>
+              <Text variant="h3">{STEP_TITLES[2]}</Text>
+              {app.cv_path ? (
+                <Button title={`Open CV (${app.cv_name ?? 'file'})`} variant="outline" icon="file-text" onPress={openCv} />
+              ) : app.about_text ? (
+                <Row label="No CV. They wrote about themselves:" value={app.about_text} />
+              ) : (
+                <Text variant="small">No CV uploaded yet.</Text>
+              )}
+            </Card>
           </>
         ) : null}
 

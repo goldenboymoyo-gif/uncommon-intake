@@ -125,7 +125,8 @@ async function uploadOne(item: QueueItem) {
   supabase.functions.invoke('process-answer', { body: { answer_id: row.id } }).catch(() => undefined);
 }
 
-export async function runQueue() {
+/** `force` retries now, ignoring the wait between attempts (used by pull to refresh). */
+export async function runQueue(force = false) {
   await load();
   if (running) return;
   running = true;
@@ -133,7 +134,7 @@ export async function runQueue() {
     const net = await NetInfo.fetch();
     if (!net.isConnected || net.isInternetReachable === false) return;
     for (const item of [...items]) {
-      if (item.nextTryAt > Date.now()) continue;
+      if (!force && item.nextTryAt > Date.now()) continue;
       try {
         await uploadOne(item);
         removeLocalFile(item.localUri);
@@ -172,7 +173,7 @@ export function UploadQueueRunner() {
     const appSub = AppState.addEventListener('change', (s) => {
       if (s === 'active') runQueue();
     });
-    const timer = setInterval(runQueue, 30000);
+    const timer = setInterval(() => runQueue(), 30000);
     return () => {
       netSub();
       appSub.remove();

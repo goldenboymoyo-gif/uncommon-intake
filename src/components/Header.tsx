@@ -1,11 +1,11 @@
 import { Pressable, View } from 'react-native';
 import { router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors, layout, space } from '../theme';
 import { initials, isStaff, useAuth } from '../lib/auth';
 import { Avatar } from './Avatar';
 import { Logo } from './Logo';
+import { Text } from './Text';
 
 // Logo on the left. When signed in, a round avatar with initials opens Profile.
 // Pass onBack on screens that sit above the tabs.
@@ -31,15 +31,15 @@ export function Header({ onBack }: { onBack?: () => void }) {
             accessibilityLabel="Go back"
             onPress={onBack}
             hitSlop={8}
-            style={{ width: layout.tapTarget, height: layout.tapTarget, justifyContent: 'center', marginLeft: -space.sm, paddingLeft: space.sm }}
+            style={{ minHeight: layout.tapTarget, justifyContent: 'center', paddingRight: space.sm }}
           >
-            <Feather name="arrow-left" size={22} color={colors.ink} />
+            <Text variant="bodySemi" style={{ color: colors.brand }}>Back</Text>
           </Pressable>
         ) : null}
         <Logo />
       </View>
       {session ? (
-        <Avatar label={initials(profile)} size={36} onPress={() => router.navigate(isStaff(profile) ? '/account' : '/profile')} />
+        <Avatar label={initials(profile)} path={profile?.avatar_path} size={36} onPress={() => router.navigate(isStaff(profile) ? '/account' : '/profile')} />
       ) : null}
     </View>
   );

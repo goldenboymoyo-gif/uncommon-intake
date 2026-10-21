@@ -37,7 +37,6 @@ export default function Surveys() {
           <Card key={s.id} large onPress={s.done ? undefined : () => router.push({ pathname: '/surveys/[id]', params: { id: s.id } })}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Chip label={s.done ? 'Done' : 'To do'} tone={s.done ? 'success' : 'brand'} />
-              {!s.done ? <Feather name="chevron-right" size={20} color={colors.muted} /> : null}
             </View>
             <Text variant="h3">{s.title}</Text>
             {s.description ? <Text variant="small">{s.description}</Text> : null}

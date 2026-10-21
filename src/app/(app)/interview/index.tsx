@@ -97,7 +97,7 @@ export default function InterviewOverview() {
       <Screen
         refreshing={loading}
         onRefresh={() => {
-          runQueue();
+          runQueue(true);
           reload();
         }}
         footer={
@@ -139,7 +139,6 @@ export default function InterviewOverview() {
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
                   <Text variant="bodySemi" style={{ flex: 1 }}>{q.prompt}</Text>
-                  <Feather name="chevron-right" size={20} color={colors.muted} />
                 </View>
               </Card>
             );
@@ -151,6 +150,7 @@ export default function InterviewOverview() {
             <Feather name="wifi-off" size={18} color={colors.warning} />
             <Text variant="small" style={{ flex: 1, color: colors.ink }}>
               {pending.length === 1 ? '1 answer is' : `${pending.length} answers are`} saved on your phone. We will keep trying to send {pending.length === 1 ? 'it' : 'them'}.
+              {pending.find((p) => p.lastError) ? ` Last problem: ${pending.find((p) => p.lastError)?.lastError}` : ''}
             </Text>
           </Card>
         ) : null}

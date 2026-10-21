@@ -87,7 +87,6 @@ export default function ApplicationTab() {
                   <Text variant="bodySemi">{STEP_TITLES[n]}</Text>
                 </View>
                 {isCurrent ? <Chip label="Next" tone="brand" /> : null}
-                {!locked && !app.submitted_at ? <Feather name="chevron-right" size={20} color={colors.muted} /> : null}
               </Card>
             );
           })}

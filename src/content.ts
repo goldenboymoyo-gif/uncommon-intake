@@ -5,7 +5,7 @@ export const bootcamp = {
   intro: 'We run free, 12 month bootcamps designed to help unemployed young adults launch their technology careers.',
   fullTime: 'Our free, Technology Bootcamp is a full-time program designed to help unemployed young adults',
   givingBack: 'The Bootcamp is also about giving back and building the future Zimbabwe we all believe in.',
-  facts: ['Free', '12 months', 'Full-time'],
+  facts: ['Free', '12 months', 'Full time'],
 };
 
 // How this app works. These describe the app itself, not the bootcamp.

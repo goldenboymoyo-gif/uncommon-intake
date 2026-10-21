@@ -38,7 +38,6 @@ export default function StaffSurveys() {
               <Card key={s.id} onPress={() => router.push({ pathname: '/survey-results/[id]', params: { id: s.id } })}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
                   <Chip label={s.is_open ? 'Open' : 'Closed'} tone={s.is_open ? 'success' : 'neutral'} />
-                  <Feather name="chevron-right" size={20} color={colors.muted} />
                 </View>
                 <Text variant="h3">{s.title}</Text>
                 <Text variant="small">

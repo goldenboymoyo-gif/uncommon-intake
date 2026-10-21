@@ -44,8 +44,8 @@ export default function Review() {
       setBusy(false);
       return setError('We could not send your application. Check your connection and try again.');
     }
-    // Start writing the interview questions now. If it fails, the interview screen tries again.
-    await callFunction('generate-questions', { application_id: app.id }).catch(() => undefined);
+    // Start writing the interview questions in the background. The interview screen waits for them.
+    callFunction('generate-questions', { application_id: app.id }).catch(() => undefined);
     setBusy(false);
     router.replace('/interview/consent');
   }

@@ -13,7 +13,6 @@ export function useQuery<T>(fn: () => Promise<T>, deps: unknown[] = []) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const run = useCallback(fn, deps);
   const reload = useCallback(async () => {
-    setLoading(true);
     try {
       setData(await run());
       setError(null);
@@ -29,11 +28,25 @@ export function useQuery<T>(fn: () => Promise<T>, deps: unknown[] = []) {
       reload();
     }, [reload]),
   );
-  return { data, error, loading, reload, setData };
+  return { data, error, loading: loading && data === null, reload, setData };
 }
 
 /** The intake applicants can apply to now, or the newest one. */
-export async function fetchCurrentIntake(): Promise<Intake | null> {
+// Intakes and hubs rarely change, so keep them for a few minutes instead of asking every screen.
+const cache = new Map<string, { at: number; value: unknown }>();
+async function cached<T>(key: string, fn: () => Promise<T>, ms = 5 * 60 * 1000): Promise<T> {
+  const hit = cache.get(key);
+  if (hit && Date.now() - hit.at < ms) return hit.value as T;
+  const value = await fn();
+  cache.set(key, { at: Date.now(), value });
+  return value;
+}
+
+export function fetchCurrentIntake(): Promise<Intake | null> {
+  return cached('intake', loadCurrentIntake);
+}
+
+async function loadCurrentIntake(): Promise<Intake | null> {
   const { data, error } = await supabase
     .from('intakes')
     .select('*')
@@ -102,7 +115,11 @@ export async function getOrCreateApplication(intakeId: string, userId: string) {
 }
 
 /** The real Uncommon hubs, from the hubs table. */
-export async function fetchHubs(): Promise<Hub[]> {
+export function fetchHubs(): Promise<Hub[]> {
+  return cached('hubs', loadHubs);
+}
+
+async function loadHubs(): Promise<Hub[]> {
   const { data, error } = await supabase.from('hubs').select('id, name, area, city, status').neq('status', 'closed').order('city').order('name');
   if (error) throw error;
   return (data ?? []) as Hub[];

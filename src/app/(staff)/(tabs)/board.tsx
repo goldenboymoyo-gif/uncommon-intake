@@ -119,7 +119,6 @@ export default function Board() {
                       {r.submitted_at ? `Applied ${formatDate(r.submitted_at)}` : `Updated ${formatDate(r.updated_at)}`}
                     </Text>
                   </View>
-                  <Feather name="chevron-right" size={20} color={colors.muted} />
                 </View>
               </Card>
             );

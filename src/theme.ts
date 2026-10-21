@@ -1,8 +1,8 @@
 // All design tokens live here. Screens and components import from this file only.
 
 export const colors = {
-  brand: '#0F3B95',
-  brandDark: '#0B2D73',
+  brand: '#0747A1',
+  brandDark: '#05357A',
   ink: '#020817',
   muted: '#64748B',
   soft: '#F1F5F9',

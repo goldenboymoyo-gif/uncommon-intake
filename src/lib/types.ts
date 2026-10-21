@@ -14,6 +14,7 @@ export type Profile = {
   email: string;
   hub_id: string | null;
   terms_accepted_at: string | null;
+  avatar_path: string | null;
 };
 
 export type Intake = {

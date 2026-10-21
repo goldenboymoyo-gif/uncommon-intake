@@ -46,7 +46,7 @@ export default function Coach() {
           >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
               <Feather name={tool.icon} size={22} color={tool.accent} />
-              {!student ? <Chip label="Opens when you join" /> : <Feather name="chevron-right" size={20} color={colors.muted} />}
+              {!student ? <Chip label="Opens when you join" /> : null}
             </View>
             <Text variant="h3">{tool.title}</Text>
             <Text variant="small">{tool.body}</Text>
@@ -67,7 +67,6 @@ export default function Coach() {
                   <Text variant="bodySemi" numberOfLines={1}>{h.title || coachTools[h.kind].title}</Text>
                   <Text variant="small">{formatDate(h.created_at)}</Text>
                 </View>
-                <Feather name="chevron-right" size={20} color={colors.muted} />
               </Card>
             ))
           )}

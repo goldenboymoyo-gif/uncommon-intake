@@ -1,8 +1,11 @@
-import { Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
+import { useAvatarUrl } from '../lib/avatar';
 import { colors, fonts } from '../theme';
 import { Text } from './Text';
 
-export function Avatar({ label, size = 40, onPress }: { label: string; size?: number; onPress?: () => void }) {
+// Shows the profile photo if there is one, otherwise the person's initials.
+export function Avatar({ label, path, size = 40, onPress }: { label: string; path?: string | null; size?: number; onPress?: () => void }) {
+  const url = useAvatarUrl(path);
   const circle = (
     <View
       style={{
@@ -12,9 +15,14 @@ export function Avatar({ label, size = 40, onPress }: { label: string; size?: nu
         backgroundColor: colors.brand,
         alignItems: 'center',
         justifyContent: 'center',
+        overflow: 'hidden',
       }}
     >
-      <Text style={{ fontFamily: fonts.bodyBold, color: colors.white, fontSize: size * 0.38 }}>{label}</Text>
+      {url ? (
+        <Image source={{ uri: url }} style={{ width: size, height: size }} accessibilityIgnoresInvertColors />
+      ) : (
+        <Text style={{ fontFamily: fonts.bodyBold, color: colors.white, fontSize: size * 0.38 }}>{label}</Text>
+      )}
     </View>
   );
   if (!onPress) return circle;

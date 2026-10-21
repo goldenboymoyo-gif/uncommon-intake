@@ -32,6 +32,11 @@
         "android.permission.MODIFY_AUDIO_SETTINGS",
         "android.permission.FOREGROUND_SERVICE",
         "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO",
+        "android.permission.MODIFY_AUDIO_SETTINGS",
+        "android.permission.FOREGROUND_SERVICE",
+        "android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK",
         "android.permission.CAMERA"
       ]
     },
@@ -84,6 +89,12 @@
         "projectId": "bd6ca00b-19bd-4de3-869b-dae6dc9c42e8"
       }
     },
-    "owner": "brightmoyo3"
+    "owner": "brightmoyo3",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bd6ca00b-19bd-4de3-869b-dae6dc9c42e8"
+    }
   }
 }

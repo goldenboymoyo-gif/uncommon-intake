@@ -9,7 +9,7 @@ import { Chip } from '../../../components/Chip';
 import { EmptyState } from '../../../components/EmptyState';
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
-import { fetchCurrentIntake, formatDate, getOrCreateApplication, useMyApplication, useQuery } from '../../../lib/data';
+import { fetchCurrentIntake, formatDate, getOrCreateApplication, intakeState, useMyApplication, useQuery } from '../../../lib/data';
 import { STEP_TITLES, TOTAL_STEPS } from '../../../lib/progress';
 import { colors, space } from '../../../theme';
 
@@ -34,11 +34,15 @@ export default function ApplicationTab() {
     }
   }
 
-  if (!loading && !app && !intake?.is_open) {
+  if (!loading && !app && intakeState(intake ?? null) !== 'open') {
     return (
       <Screen withTabBar refreshing={loading} onRefresh={reload}>
         <Text variant="h1">Application</Text>
-        <EmptyState icon="calendar" title="Applications are not open yet" body="We will show the form here as soon as the intake opens." />
+        <EmptyState
+          icon="calendar"
+          title={intakeState(intake ?? null) === 'not_yet' ? `Applications open on ${formatDate(intake?.opens_at)}` : 'Applications are closed'}
+          body={intakeState(intake ?? null) === 'not_yet' ? 'Come back on that day to start your application.' : 'We will show the form here when the next intake opens.'}
+        />
       </Screen>
     );
   }

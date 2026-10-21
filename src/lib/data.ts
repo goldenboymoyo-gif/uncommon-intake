@@ -123,5 +123,14 @@ export function useUnreadCount() {
   return count;
 }
 
+/** Open only between the open and close dates, in Zimbabwe time. The database checks this too. */
+export function intakeState(intake: Intake | null): 'open' | 'not_yet' | 'closed' {
+  if (!intake || !intake.is_open) return 'closed';
+  const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Africa/Harare' });
+  if (intake.opens_at && today < intake.opens_at) return 'not_yet';
+  if (intake.closes_at && today > intake.closes_at) return 'closed';
+  return 'open';
+}
+
 export const formatDate = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';

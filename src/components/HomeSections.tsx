@@ -2,7 +2,7 @@ import { View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { colors, radius, space } from '../theme';
 import { bootcamp, howItWorks, storiesEmpty } from '../content';
-import { fetchGraduateStories, formatDate, useQuery } from '../lib/data';
+import { fetchGraduateStories, formatDate, intakeState, useQuery } from '../lib/data';
 import type { Intake } from '../lib/types';
 import { Card } from './Card';
 import { Chip } from './Chip';
@@ -16,7 +16,8 @@ export function IntakeCard({ intake }: { intake: Intake | null }) {
   return (
     <Card large style={{ backgroundColor: colors.brand, borderColor: colors.brand, gap: space.md }}>
       <View style={{ flexDirection: 'row', gap: space.sm, flexWrap: 'wrap' }}>
-        {intake?.is_open ? <Chip label="Applications open" tone="success" /> : null}
+        {intakeState(intake) === 'open' ? <Chip label="Applications open" tone="success" /> : null}
+        {intakeState(intake) === 'not_yet' && intake?.opens_at ? <Chip label={`Opens ${formatDate(intake.opens_at)}`} tone="warning" /> : null}
         {bootcamp.facts.map((f) => (
           <View key={f} style={{ backgroundColor: 'rgba(255,255,255,0.14)', borderRadius: radius.pill, paddingHorizontal: space.sm + 2, paddingVertical: 3 }}>
             <Text variant="tiny" style={{ color: colors.white }}>{f}</Text>

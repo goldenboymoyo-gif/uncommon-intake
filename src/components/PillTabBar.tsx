@@ -11,7 +11,7 @@ export type TabItem = { name: string; label: string; icon: keyof typeof Feather.
 
 // Floating dark pill. White icons, the active tab is a white circle with a brand icon
 // and a small label beside it. It is fixed; only the screen content scrolls.
-export function PillTabBar({ state, navigateToTab, items }: BottomTabBarProps & { items: TabItem[] }) {
+export function PillTabBar({ state, navigation, items }: BottomTabBarProps & { items: TabItem[] }) {
   const insets = useSafeAreaInsets();
   const activeName = state.routes[state.index]?.name;
 
@@ -29,9 +29,10 @@ export function PillTabBar({ state, navigateToTab, items }: BottomTabBarProps & 
               accessibilityState={{ selected: focused }}
               accessibilityLabel={item.label}
               onPress={() => {
-                if (focused) return;
+                const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
+                if (focused || event.defaultPrevented) return;
                 Haptics.selectionAsync();
-                navigateToTab(route.key);
+                navigation.navigate(route.name);
               }}
               style={styles.hit}
             >

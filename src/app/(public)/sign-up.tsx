@@ -43,7 +43,7 @@ export default function SignUp() {
       },
     });
     setBusy(false);
-    if (err) return setError('We could not send the code. Check your email address and try again.');
+    if (err) return setError('We could not send the code right now. Please try again in a few minutes.');
     router.push({ pathname: '/verify', params: { email, terms: '1' } });
   }
 

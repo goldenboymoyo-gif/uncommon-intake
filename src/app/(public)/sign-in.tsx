@@ -25,7 +25,7 @@ export default function SignIn() {
       return setError(
         /signups not allowed|not found/i.test(err.message)
           ? 'We could not find an account with this email. Please create an account first.'
-          : 'We could not send the code. Please try again.',
+          : 'We could not send the code right now. Please try again in a few minutes.',
       );
     }
     router.push({ pathname: '/verify', params: { email: clean } });

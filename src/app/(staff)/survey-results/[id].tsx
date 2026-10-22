@@ -7,6 +7,8 @@ import { Screen } from '../../../components/Screen';
 import { AiLabel } from '../../../components/AiLabel';
 import { Button } from '../../../components/Button';
 import { Card } from '../../../components/Card';
+import { ConfirmDelete } from '../../../components/ConfirmDelete';
+import { Input } from '../../../components/Input';
 import { Text } from '../../../components/Text';
 import { useQuery } from '../../../lib/data';
 import { callFunction, supabase } from '../../../lib/supabase';
@@ -21,10 +23,12 @@ export default function SurveyResults() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [open, setOpen] = useState<string | null>(null);
+  const [editing, setEditing] = useState(false);
+  const [draft, setDraft] = useState({ title: '', description: '' });
 
   const { data, reload, loading } = useQuery(async () => {
     const [{ data: survey }, { data: questions }, { data: responses }, { data: themes }] = await Promise.all([
-      supabase.from('surveys').select('title, is_open').eq('id', id).single(),
+      supabase.from('surveys').select('title, description, is_open').eq('id', id).single(),
       supabase.from('survey_questions').select('id, prompt, kind').eq('survey_id', id).order('position'),
       supabase.from('survey_responses').select('id, question_id, value').eq('survey_id', id),
       supabase.from('survey_themes').select('id, question_id, theme, response_ids').eq('survey_id', id),
@@ -61,8 +65,27 @@ export default function SurveyResults() {
       <Header onBack={() => router.back()} />
       <Screen refreshing={loading} onRefresh={reload}>
         <Text variant="h1">{data?.survey?.title ?? ''}</Text>
-        {data?.survey ? (
-          <Button title={data.survey.is_open ? 'Close this survey' : 'Open this survey again'} variant="outline" onPress={toggleOpen} />
+        {data?.survey && editing ? (
+          <Card style={{ gap: space.md }}>
+            <Input label="Title" value={draft.title} onChangeText={(v) => setDraft((d) => ({ ...d, title: v }))} />
+            <Input label="Short description" optional value={draft.description} onChangeText={(v) => setDraft((d) => ({ ...d, description: v }))} />
+            <Button
+              title="Save changes"
+              disabled={!draft.title.trim()}
+              onPress={async () => {
+                await supabase.from('surveys').update({ title: draft.title.trim(), description: draft.description.trim() || null }).eq('id', id);
+                setEditing(false);
+                reload();
+              }}
+            />
+            <Button title="Cancel" variant="ghost" onPress={() => setEditing(false)} />
+          </Card>
+        ) : null}
+        {data?.survey && !editing ? (
+          <View style={{ flexDirection: 'row', gap: space.sm }}>
+            <Button title="Edit" variant="outline" icon="edit-2" fullWidth={false} style={{ flex: 1 }} onPress={() => { setDraft({ title: data.survey!.title, description: data.survey!.description ?? '' }); setEditing(true); }} />
+            <Button title={data.survey.is_open ? 'Close' : 'Reopen'} variant="outline" fullWidth={false} style={{ flex: 1 }} onPress={toggleOpen} />
+          </View>
         ) : null}
 
         {data?.questions.map((q, i) => {
@@ -123,6 +146,17 @@ export default function SurveyResults() {
           );
         })}
         {error ? <Text variant="small" style={{ color: colors.danger }}>{error}</Text> : null}
+        {data?.survey ? (
+          <ConfirmDelete
+            label="Delete this survey"
+            warning="This removes the survey, every answer and the themes. Students will no longer see it. It cannot be undone."
+            onConfirm={async () => {
+              const { error: err } = await supabase.from('surveys').delete().eq('id', id);
+              if (err) throw new Error('We could not delete the survey. Please try again.');
+              router.back();
+            }}
+          />
+        ) : null}
       </Screen>
     </View>
   );

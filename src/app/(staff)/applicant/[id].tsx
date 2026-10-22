@@ -271,18 +271,21 @@ function Segments({ value, onChange }: { value: Tab; onChange: (t: Tab) => void 
     { key: 'notes', label: 'Notes' },
   ];
   return (
-    <View style={{ flexDirection: 'row', backgroundColor: colors.soft, borderRadius: radius.sm, padding: space.xs }}>
-      {options.map((o) => (
-        <Pressable
-          key={o.key}
-          accessibilityRole="tab"
-          accessibilityState={{ selected: value === o.key }}
-          onPress={() => onChange(o.key)}
-          style={{ flex: 1, minHeight: layout.tapTarget - 4, alignItems: 'center', justifyContent: 'center', borderRadius: radius.sm - 2, backgroundColor: value === o.key ? colors.white : 'transparent' }}
-        >
-          <Text variant="smallSemi" style={{ color: value === o.key ? colors.ink : colors.muted }}>{o.label}</Text>
-        </Pressable>
-      ))}
+    <View style={{ flexDirection: 'row', borderBottomWidth: 1, borderBottomColor: colors.border }} accessibilityRole="tablist">
+      {options.map((o) => {
+        const on = value === o.key;
+        return (
+          <Pressable
+            key={o.key}
+            accessibilityRole="tab"
+            accessibilityState={{ selected: on }}
+            onPress={() => onChange(o.key)}
+            style={{ flex: 1, minHeight: layout.tapTarget, alignItems: 'center', justifyContent: 'center', borderBottomWidth: 2, borderBottomColor: on ? colors.brand : 'transparent', marginBottom: -1 }}
+          >
+            <Text variant={on ? 'bodySemi' : 'body'} style={{ color: on ? colors.brand : colors.muted }}>{o.label}</Text>
+          </Pressable>
+        );
+      })}
     </View>
   );
 }

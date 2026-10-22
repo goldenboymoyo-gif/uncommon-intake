@@ -4,6 +4,7 @@ import { Header } from '../../../../components/Header';
 import { Screen } from '../../../../components/Screen';
 import { Card } from '../../../../components/Card';
 import { FeedbackCard } from '../../../../components/FeedbackCard';
+import { ConfirmDelete } from '../../../../components/ConfirmDelete';
 import { Text } from '../../../../components/Text';
 import { coachTools, CoachKind } from '../../../../lib/coach';
 import { formatDate, useQuery } from '../../../../lib/data';
@@ -38,6 +39,15 @@ export default function CoachSession() {
               </Card>
             ) : null}
             {data.feedback ? <FeedbackCard feedback={data.feedback} /> : null}
+            <ConfirmDelete
+              label="Delete from history"
+              warning="This removes what you sent and the feedback. It cannot be undone."
+              onConfirm={async () => {
+                const { error } = await supabase.from('coach_sessions').delete().eq('id', id);
+                if (error) throw new Error('We could not delete this. Please try again.');
+                router.back();
+              }}
+            />
           </>
         ) : null}
       </Screen>

@@ -7,40 +7,37 @@ import { Avatar } from './Avatar';
 import { Logo } from './Logo';
 import { Text } from './Text';
 
-// Logo on the left. When signed in, a round avatar with initials opens Profile.
-// Pass onBack on screens that sit above the tabs.
+// Logo on the left and, when signed in, a round photo or initials on the right that opens Profile.
+// The logo never moves: screens that need Back show it on its own row underneath.
 export function Header({ onBack }: { onBack?: () => void }) {
   const insets = useSafeAreaInsets();
   const { session, profile } = useAuth();
   return (
-    <View
-      style={{
-        paddingTop: insets.top + space.sm,
-        paddingBottom: space.sm,
-        paddingHorizontal: layout.sidePadding,
-        backgroundColor: colors.white,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-      }}
-    >
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, minHeight: layout.tapTarget }}>
-        {onBack ? (
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-            onPress={onBack}
-            hitSlop={8}
-            style={{ minHeight: layout.tapTarget, justifyContent: 'center', paddingRight: space.sm }}
-          >
-            <Text variant="bodySemi" style={{ color: colors.brand }}>Back</Text>
-          </Pressable>
-        ) : null}
+    <View style={{ paddingTop: insets.top + space.sm, paddingHorizontal: layout.sidePadding, backgroundColor: colors.white }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', minHeight: layout.tapTarget }}>
         <Logo />
+        {session ? (
+          <Avatar
+            label={initials(profile)}
+            path={profile?.avatar_path}
+            size={34}
+            onPress={() => router.navigate(isStaff(profile) ? '/account' : '/profile')}
+          />
+        ) : null}
       </View>
-      {session ? (
-        <Avatar label={initials(profile)} path={profile?.avatar_path} size={36} onPress={() => router.navigate(isStaff(profile) ? '/account' : '/profile')} />
-      ) : null}
+      {onBack ? (
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Go back"
+          onPress={onBack}
+          hitSlop={8}
+          style={{ flexDirection: 'row', alignItems: 'center', alignSelf: 'flex-start', minHeight: layout.tapTarget }}
+        >
+          <Text variant="bodySemi" style={{ color: colors.brand }}>Back</Text>
+        </Pressable>
+      ) : (
+        <View style={{ height: space.sm }} />
+      )}
     </View>
   );
 }

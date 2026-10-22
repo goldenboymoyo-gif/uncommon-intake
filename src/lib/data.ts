@@ -4,9 +4,22 @@ import { supabase } from './supabase';
 import { useAuth } from './auth';
 import type { Application, GraduateStory, Hub, Intake } from './types';
 
-/** Small loader: runs `fn` on mount and whenever the screen comes back into focus. */
-export function useQuery<T>(fn: () => Promise<T>, deps: unknown[] = []) {
-  const [data, setData] = useState<T | null>(null);
+// Last result of each screen's query, so returning to a screen shows it at once while it refreshes.
+const lastResults = new Map<string, unknown>();
+
+/**
+ * Small loader: runs `fn` on mount and whenever the screen comes back into focus.
+ * Pass `key` to show the last result straight away while fresh data loads in the background.
+ */
+export function useQuery<T>(fn: () => Promise<T>, deps: unknown[] = [], key?: string) {
+  const [data, setDataState] = useState<T | null>(() => (key ? ((lastResults.get(key) as T) ?? null) : null));
+  const setData = useCallback(
+    (value: T | null) => {
+      if (key) lastResults.set(key, value);
+      setDataState(value);
+    },
+    [key],
+  );
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -84,7 +97,7 @@ export function useMyApplication() {
       .maybeSingle();
     if (error) throw error;
     return data as Application | null;
-  }, [profile?.id]);
+  }, [profile?.id], profile ? `my-app:${profile.id}` : undefined);
 }
 
 /** Returns the person's application for the intake, creating it with step 1 details if needed. */

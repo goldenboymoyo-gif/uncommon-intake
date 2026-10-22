@@ -43,7 +43,7 @@ export default function Board() {
       .limit(500);
     if (error) throw error;
     return (rows ?? []) as unknown as Row[];
-  });
+  }, [], 'staff-board');
 
   const counts = useMemo(() => {
     const c: Record<string, number> = { all: data?.length ?? 0 };

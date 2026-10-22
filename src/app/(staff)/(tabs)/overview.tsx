@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
@@ -29,7 +29,7 @@ export default function OverviewScreen() {
     const { data: o, error } = await supabase.rpc('staff_overview', { p_intake: intake.id });
     if (error) throw error;
     return { intake, overview: o as Overview };
-  });
+  }, [], 'staff-overview');
 
   const o = data?.overview;
   const placesLeft = o?.places_total != null ? Math.max(o.places_total - o.accepted, 0) : null;
@@ -86,6 +86,18 @@ export default function OverviewScreen() {
               </View>
             </View>
             <Button title="Record a job outcome" variant="outline" icon="plus" onPress={() => router.push('/job-outcome')} />
+            {o?.job_outcomes ? <Button title="See and edit job outcomes" variant="ghost" onPress={() => router.push('/job-outcomes' as Href)} /> : null}
+          </Card>
+
+          <Card large style={{ gap: space.md }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+              <Feather name="award" size={20} color={colors.accentOrange} />
+              <View style={{ flex: 1 }}>
+                <Text variant="h3">2026 graduate stories</Text>
+                <Text variant="small">Shown on Home for applicants, with consent only.</Text>
+              </View>
+            </View>
+            <Button title="Manage graduate stories" variant="outline" onPress={() => router.push('/stories' as Href)} />
           </Card>
         </>
       )}

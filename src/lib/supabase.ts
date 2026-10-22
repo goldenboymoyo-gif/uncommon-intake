@@ -9,7 +9,19 @@ const anonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY ?? '';
 
 export const isConfigured = Boolean(url && anonKey);
 
+// Every request gets a time limit so a bad connection can never leave a screen loading forever.
+// File uploads and AI work get longer.
+function fetchWithTimeout(input: RequestInfo | URL, init?: RequestInit) {
+  const href = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+  const ms = href.includes('/storage/v1/object') ? 300_000 : href.includes('/functions/v1/') ? 90_000 : 25_000;
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  init?.signal?.addEventListener('abort', () => controller.abort());
+  return fetch(input, { ...init, signal: controller.signal }).finally(() => clearTimeout(timer));
+}
+
 export const supabase = createClient(url || 'http://localhost', anonKey || 'missing', {
+  global: { fetch: fetchWithTimeout },
   auth: {
     storage: secureStorage,
     autoRefreshToken: true,

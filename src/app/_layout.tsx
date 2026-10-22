@@ -8,6 +8,7 @@ import { NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold } fro
 import { AuthProvider, isStaff, useAuth } from '../lib/auth';
 import { UploadQueueRunner } from '../lib/uploadQueue';
 import { BrandSplash } from '../components/BrandSplash';
+import { ConnectionProblem } from '../components/ConnectionProblem';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -34,14 +35,15 @@ export default function RootLayout() {
 }
 
 function RootStack() {
-  const { session, profile, loading } = useAuth();
-  const ready = !loading && (!session || profile);
+  const { session, profile, loading, profileFailed } = useAuth();
+  const ready = !loading && (!session || !!profile || profileFailed);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
 
   if (!ready) return <BrandSplash />;
+  if (session && !profile) return <ConnectionProblem />;
   const signedIn = !!session && !!profile;
   const staff = signedIn && isStaff(profile);
 

@@ -30,7 +30,7 @@ export default function Notifications() {
       .order('created_at', { ascending: false })
       .limit(50);
     return (rows ?? []) as AppNotification[];
-  }, [profile?.id]);
+  }, [profile?.id], `notifications:${profile?.id}`);
 
   // Opening the list marks everything as read.
   useEffect(() => {

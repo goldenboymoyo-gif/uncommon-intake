@@ -35,6 +35,7 @@ export default function SignIn() {
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
       <Screen
+        centered
         footer={
           <>
             <Button title="Send me a code" loading={busy} onPress={submit} />

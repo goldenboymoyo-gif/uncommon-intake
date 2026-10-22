@@ -38,6 +38,7 @@ export default function Decide() {
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
       <Screen
+        centered
         footer={
           <>
             <Button title={c.button} haptic loading={busy} variant={decision === 'not_accepted' ? 'danger' : 'primary'} onPress={confirm} />

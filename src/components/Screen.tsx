@@ -12,10 +12,12 @@ type Props = {
   refreshing?: boolean;
   onRefresh?: () => void;
   contentStyle?: ViewStyle;
+  /** Centre short content (like sign in forms) in the space instead of leaving a gap at the bottom. */
+  centered?: boolean;
 };
 
 // Only the content scrolls. Header, footer and tab bar stay fixed.
-export function Screen({ children, withTabBar, footer, refreshing, onRefresh, contentStyle }: Props) {
+export function Screen({ children, withTabBar, footer, refreshing, onRefresh, contentStyle, centered }: Props) {
   const insets = useSafeAreaInsets();
   const bottom = withTabBar ? layout.tabBarClearance + insets.bottom : footer ? space.lg : insets.bottom + space.xl;
   return (
@@ -26,7 +28,8 @@ export function Screen({ children, withTabBar, footer, refreshing, onRefresh, co
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[
-          { paddingHorizontal: layout.sidePadding, paddingTop: space.sm, paddingBottom: bottom, gap: space.lg },
+          { flexGrow: 1, paddingHorizontal: layout.sidePadding, paddingTop: space.sm, paddingBottom: bottom, gap: space.lg },
+          centered && { justifyContent: 'center' },
           contentStyle,
         ]}
         refreshControl={

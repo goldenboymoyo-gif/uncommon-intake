@@ -17,6 +17,6 @@ const xml = (fill: string) =>
   `<svg viewBox="0 0 175 17" xmlns="http://www.w3.org/2000/svg">${paths.map((d) => `<path d="${d}" fill="${fill}"/>`).join('')}</svg>`;
 
 /** `height` sets the size; the width follows the logo's shape. */
-export function Logo({ height = 18, color = colors.brand }: { height?: number; color?: string }) {
+export function Logo({ height = 13, color = colors.brand }: { height?: number; color?: string }) {
   return <SvgXml xml={xml(color)} height={height} width={(height * 175) / 17} accessibilityLabel="uncommon" />;
 }

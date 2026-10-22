@@ -30,9 +30,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       await loadProfile(data.session?.user.id);
       setLoading(false);
     });
+    // Supabase holds a lock while this callback runs, so database calls must wait until it returns.
+    // Calling them directly here can freeze sign in.
     const { data: sub } = supabase.auth.onAuthStateChange((_event, next) => {
       setSession(next);
-      loadProfile(next?.user.id);
+      setTimeout(() => loadProfile(next?.user.id), 0);
     });
     return () => sub.subscription.unsubscribe();
   }, [loadProfile]);

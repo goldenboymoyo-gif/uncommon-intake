@@ -28,12 +28,11 @@ export default function Verify() {
     setBusy(true);
     setError(null);
     const { data, error: err } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
-    if (err || !data.user) {
-      setBusy(false);
-      return setError('That code did not work. Check it, or ask for a new one.');
-    }
+    setBusy(false);
+    if (err || !data.user) return setError('That code did not work. Check it, or ask for a new one.');
     if (terms === '1') {
-      await supabase.from('profiles').update({ terms_accepted_at: new Date().toISOString() }).eq('id', data.user.id);
+      // Not awaited: the signed-in screens open straight away.
+      supabase.from('profiles').update({ terms_accepted_at: new Date().toISOString() }).eq('id', data.user.id).then(() => undefined);
     }
     // The root layout now shows the signed-in screens.
   }
@@ -49,6 +48,7 @@ export default function Verify() {
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
       <Screen
+        centered
         footer={
           <>
             <Button title="Continue" loading={busy} onPress={verify} haptic />

@@ -1,158 +1,131 @@
 # Uncommon Intake
 
-A mobile app (iOS and Android only) for applying to the Uncommon.org Technology Bootcamp,
-following an application to a decision, and getting career support once accepted.
+A mobile app (iOS and Android only) for applying to the free Uncommon.org Technology Bootcamp,
+following an application to a decision, and supporting students once they join.
 
-Solo capstone project. React Native with Expo, TypeScript, Expo Router and Supabase.
+Solo capstone project. React Native with Expo (SDK 57), TypeScript, Expo Router and Supabase.
 
 ## What it does
 
 **Applicants**
-- Home with the intake, graduate stories (only real, consented, staff-approved ones) and "How it works".
+- Home: the intake with a live countdown, Uncommon's Innovation Hubs by city, real 2026 graduate
+  stories (only with written consent), and "How it works".
 - Sign up with name, phone or WhatsApp, and email. Sign in with a code sent by email. No passwords.
-- A 2 step application with autosave, "Save and finish later", and a review screen before sending:
-  1. Your details: name, email, phone or WhatsApp, where you live, and a hub (from the `hubs` table).
-  2. Your CV: PDF or Word, up to 5MB. No CV? Applicants can write a short "about you" instead.
-- After sending, AI reads the CV and writes 5 professional interview questions about that person's own
-  experience (`generate-questions` Edge Function). It runs once per applicant and never asks about age,
-  gender, family, religion, health, background or politics. Staff see which part of the CV each question came from.
-- A consent screen before the interview, then 5 questions answered by text, audio (waveform and timer)
-  or short video. Answers are saved on the phone first and uploaded when the network allows.
-  Low data mode gives smaller audio files and turns video off.
-- A status timeline: Application received, Interview answers sent, Review by staff, Decision.
-- Decisions in the app, as a push notification, and by email. Accepted applicants tap "Confirm my place".
+- Application in 2 steps with autosave and a review screen:
+  1. Details: name, email, phone, where you live, and a hub (dropdown of the real hubs).
+  2. CV (PDF or Word, max 5MB). No CV? Write a short "about you" instead.
+- After sending, AI reads the CV and writes 5 professional interview questions about that person's
+  own experience. Written once per applicant; never about age, gender, family, religion, health,
+  background or politics.
+- Consent screen, then answers by text, audio (waveform and timer) or short video. Answers are saved
+  on the phone and uploaded when the network allows. Low data mode.
+- Two commitment questions: at the hub every weekday 9am to 4pm, and volunteering to teach coding to children.
+- Status timeline, decision in the app, by push notification and by email. "Confirm my place".
+- Profile photo, notifications, and Delete my account.
 
 **Students** (after confirming a place)
-- Career coach: CV feedback, cover letter feedback, job interview practice, and history.
-- Surveys from instructors.
+- Career coach: CV, cover letter and job interview practice feedback, with history they can delete.
+- Surveys from instructors, with push notifications when a new one arrives.
 
-**Staff** (accounts created by an admin only)
-- Review board with status chips, search and filters. Two columns on tablets.
-- Applicant detail: details, hub, CV, the AI-written questions, interview answers, transcripts, AI summaries, audio and video playback, notes.
-- Accept, Waitlist or Decline with a confirmation screen. Mark "Needs help" for hub assisted mode.
-- Overview counted from real rows only: applied, interviewed, accepted, places left, applications by hub, job outcomes.
-- Surveys: create, see results, and AI themes that always link back to the raw answers.
+**Staff** (accounts made by an admin, never by sign up)
+- Review board with status chips, search and filters (two columns on tablets).
+- Applicant page with Interview, Application and Notes tabs: answers, transcripts, AI summaries,
+  audio and video, CV, commitments, notes. Accept, Waitlist or Decline with a confirmation screen.
+- Overview counted from real rows: applied, interviewed, accepted, places left, applications by hub.
+- Job outcomes (add, edit, delete), 2026 graduate stories (add, edit, delete, consent required).
+- Surveys (create, edit, close, delete, AI themes linked to raw answers) and messages to all students.
 
 ## Rules this codebase follows
 
-1. **No fake data.** Nothing in code, seeds or screens invents people, employers, quotes, numbers or stories.
-   Empty tables show honest empty states.
-2. Graduate stories come only from `graduate_stories` rows with `consent_given = true` and `approved_by` set.
-3. Staff numbers come only from database rows (`staff_overview` function).
+1. **No fake data.** Nothing invents people, employers, quotes, numbers or stories. Empty means an honest empty state.
+2. Graduate stories show only with `consent_given = true` and `approved_by` set.
+3. Staff numbers come only from database rows.
 4. Test accounts exist only in `scripts/dev-seed.mjs`, which refuses to run against production.
-5. Simple English everywhere.
-6. **The AI never decides.** It only gives feedback, transcripts and summaries. People decide.
-   It does not analyse faces, voice tone or emotion. All AI text is labelled "AI generated".
-7. **No secrets in the app.** The app holds only the public Supabase URL and anon key.
-   OpenAI and other keys live in Edge Function secrets.
+5. Simple English everywhere, no arrows or dashes in the interface.
+6. **The AI never decides.** Feedback, questions, transcripts and summaries only, all labelled
+   "AI generated". No face, voice tone or emotion analysis. People decide.
+7. **No secrets in the app.** It holds only the public Supabase URL and publishable key.
 
 ## Project layout
 
 ```
 src/
-  app/                 Expo Router screens
-    (public)/          Home, sign up, sign in, code check, terms
-    (app)/             Applicant and student screens (tabs + stack)
-    (staff)/           Staff screens (tabs + stack)
-  components/          UI kit: Button, Input, Card, Chip, PillTabBar, Logo, recorders...
-  lib/                 Supabase client, auth, data hooks, upload queue, push
-  theme.ts             All design tokens
-  content.ts           Bootcamp wording, copied word for word from uncommon.org
+  app/              Expo Router screens: (public), (app) for applicants and students, (staff)
+  components/       UI kit: Button, Input, Card, PillTabBar, HubPicker, CvUpload, recorders...
+  lib/              Supabase client, auth, data loading and cache, upload queue, push, avatars
+  theme.ts          Design tokens (brand blue #0747A1 from uncommon.org)
+  content.ts        Bootcamp wording copied from uncommon.org
 supabase/
-  migrations/          Schema, Row Level Security, storage, triggers, cron
-  functions/           Edge Functions (all AI calls happen here)
-    _shared/ai.ts      One AI module: OpenAI, with Hugging Face fallback
-  setup/               SQL template for a real intake
-scripts/dev-seed.mjs   Development-only test accounts
+  migrations/       Schema, Row Level Security, storage, triggers, cron
+  functions/        Edge Functions; all AI runs here (_shared/ai.ts: OpenAI, Hugging Face fallback)
+  setup/            SQL templates: real intake setup, removing the test intake
+scripts/
+  dev-seed.mjs      Development only test accounts
+  expo-go.mjs       Starts the dev server for Expo Go
+assets/             App icon, splash image
 ```
 
-## Setup
-
-### 1. App
+## Run it on your phone (Expo Go)
 
 ```bash
 npm install
-cp .env.example .env
+cp .env.example .env    # then fill in the two public Supabase values
+npm run go              # scan the QR code with Expo Go
+npm run go:tunnel       # if the phone can not reach your computer on Wi-Fi
 ```
 
-Fill in `EXPO_PUBLIC_SUPABASE_URL` and `EXPO_PUBLIC_SUPABASE_ANON_KEY` in `.env`. Never commit `.env`.
+The project is on SDK 57 because the store version of Expo Go does not support SDK 58 yet.
+Push notifications do not work in Expo Go; use an installed build for those.
 
-The app uses native modules (camera, audio, notifications), so use a development build, not Expo Go:
+## Supabase
 
-```bash
-npx eas-cli@latest build --profile development --platform android
-npx expo start --dev-client
-```
-
-### 2. Supabase
+Project: `piksurpdvbmcbupnopeu`. With the CLI linked (`npx supabase link --project-ref piksurpdvbmcbupnopeu`):
 
 ```bash
-npx supabase link --project-ref <your-project-ref>
 npx supabase db push
-npx supabase functions deploy
+npx supabase functions deploy <name> --use-api --project-ref piksurpdvbmcbupnopeu
 ```
 
-Then in the Supabase Dashboard:
-- **Authentication > Sign In / Providers > Email**: turn on email sign up. Set the OTP length to 6.
-- **Authentication > Emails**: in both "Confirm signup" and "Magic Link", show `{{ .Token }}`
-  (the code), not a link. `supabase/templates/code.html` is ready to paste.
-- **Database > Extensions**: `pg_cron` and `pg_net` are turned on by the migration.
-- **Vault**: add `project_url` and `cron_secret` (see the comment in `20261020000002_storage_status_cron.sql`).
+Edge Functions: `generate-questions`, `process-answer`, `coach-feedback`, `survey-themes`,
+`decide`, `confirm-place`, `notify-students`, `delete-account`, `purge-media`.
 
-### 3. Edge Function secrets
-
-```bash
-cp supabase/functions/.env.example supabase/functions/.env
-# fill it in, then:
-npx supabase secrets set --env-file supabase/functions/.env
-```
+Secrets (Dashboard: Edge Functions, Secrets). Never commit them:
 
 | Secret | What it is |
 | --- | --- |
-| `AI_PROVIDER` | `openai` (default) or `huggingface` |
-| `OPENAI_API_KEY` | OpenAI key |
-| `OPENAI_MODEL` | Model for feedback and summaries (Responses API with structured outputs) |
-| `OPENAI_TRANSCRIBE_MODEL` | Speech to text model |
-| `HF_TOKEN`, `HF_MODEL`, `HF_TRANSCRIBE_MODEL` | Hugging Face Inference Providers fallback |
+| `AI_PROVIDER` | `openai` (or `huggingface`) |
+| `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_TRANSCRIBE_MODEL` | AI (currently `gpt-6-luna` and `gpt-transcribe`) |
+| `HF_TOKEN`, `HF_MODEL`, `HF_TRANSCRIBE_MODEL` | Optional Hugging Face fallback |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Decision emails |
-| `CRON_SECRET` | Shared with the daily media clean up job |
+| `CRON_SECRET` | Daily recording clean up (also `cron_secret` and `project_url` in Vault) |
 
-### 4. Real intake content
+Sign in codes are sent through custom SMTP (Authentication, Emails, SMTP Settings) using the Gmail
+account `uncommonintake.app@gmail.com` with an app password. Both email templates show `{{ .Token }}`.
 
-Interview questions are written per applicant from their CV, so no question list is needed. Staff still
-set up the intake itself (year, dates, places) and, optionally, a review checklist. See
-`supabase/setup/intake_setup_template.sql`.
-That file also shows how to make someone staff and how to publish a consented graduate story.
+Make someone staff in the SQL editor: `update profiles set role = 'staff' where email = '...';`
 
-### 5. Test accounts (development only)
+The real intake, hubs and checklist: see `supabase/setup/intake_setup_template.sql`.
+Before 1 November 2026, remove the test intake with `supabase/setup/remove_test_intake.sql`.
 
-```bash
-# against a local Supabase (npx supabase start)
-SUPABASE_URL=http://127.0.0.1:54321 SUPABASE_SERVICE_ROLE_KEY=<local service key> npm run seed:dev
-```
-
-Creates "Test Applicant 1" to "Test Applicant 3", "Test Student 1" and "Test Staff 1" with
-`@example.test` emails. Add `-- --with-test-intake` for an open test intake so you can click
-through the form and interview locally. Delete it before going live.
-
-## Build and release
+## Build and release (EAS)
 
 ```bash
-npx eas-cli@latest build --profile preview --platform android    # APK for testing
-npx eas-cli@latest build --profile production --platform ios     # TestFlight (needs an Apple developer account)
-npx eas-cli@latest submit --platform ios
-npx eas-cli@latest update --channel preview --message "..."       # over the air update
+npx eas-cli build --platform android --profile preview      # installable APK
+npx eas-cli update --channel preview --environment preview  # over the air update for code only changes
 ```
 
-Push notifications need the EAS project ID, which `eas build` adds to `app.json` the first time.
+- EAS project `@brightmoyo3/uncommon-intake`. Public Supabase values come from EAS environment variables.
+- Android push uses Firebase project `uncommon-intake-zw26`. `google-services.json` is not in git;
+  builds get it from the `GOOGLE_SERVICES_JSON` EAS file variable. The FCM V1 key is uploaded with
+  `npx eas-cli credentials -p android`.
+- iOS needs an Apple Developer account, then `--platform ios --profile production` and TestFlight.
 
-## Fonts
+## Privacy and security
 
-Headings use Outfit and body text uses Nunito Sans (a stand-in for Avenir Next). To use Chillax for
-headings, add the font files from Fontshare to `assets/fonts`, load them in `src/app/_layout.tsx`,
-and change `fonts.heading` in `src/theme.ts`.
-
-## Logo
-
-`src/components/Logo.tsx` renders the word "uncommon". Replace its body with the official SVG
-when you have it. Every screen uses this one component.
+- Row Level Security on every table; column limits so applicants can not change review fields or AI text.
+- Private storage buckets with expiring links; recordings deleted after about 90 days.
+- Sessions stored in the phone's secure storage; no passwords.
+- Every request has a time limit; the app never waits forever.
+- The privacy notice (`src/components/PrivacyNotice.tsx`) follows Zimbabwe's Cyber and Data
+  Protection Act. Have it reviewed by Uncommon's legal adviser, and register with POTRAZ as a
+  data controller before launch.

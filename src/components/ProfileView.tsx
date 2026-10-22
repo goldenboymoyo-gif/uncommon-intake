@@ -7,7 +7,8 @@ import { Button } from './Button';
 import { Card } from './Card';
 import { Chip } from './Chip';
 import { Text } from './Text';
-import { initials, useAuth } from '../lib/auth';
+import { initials, isStaff, useAuth } from '../lib/auth';
+import { callFunction } from '../lib/supabase';
 import { pickAndUploadAvatar } from '../lib/avatar';
 import { colors, space } from '../theme';
 
@@ -21,6 +22,21 @@ export function ProfileView({ links }: { links: Link[] }) {
   const [busy, setBusy] = useState(false);
   const [photoBusy, setPhotoBusy] = useState(false);
   const [photoError, setPhotoError] = useState<string | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
+
+  async function deleteAccount() {
+    setDeleting(true);
+    setDeleteError(null);
+    try {
+      await callFunction('delete-account', {});
+      await signOut();
+    } catch (e) {
+      setDeleteError((e as Error).message);
+      setDeleting(false);
+    }
+  }
   if (!profile) return null;
 
   return (
@@ -64,6 +80,22 @@ export function ProfileView({ links }: { links: Link[] }) {
           </Card>
         ))}
       </View>
+
+      {!isStaff(profile) ? (
+        confirmDelete ? (
+          <Card style={{ gap: space.md, borderColor: colors.danger }}>
+            <Text variant="bodySemi">Delete your account?</Text>
+            <Text variant="small">
+              This removes your account, your application, your CV, your interview answers and recordings, and your photo. It cannot be undone.
+            </Text>
+            <Button title="Yes, delete everything" variant="danger" loading={deleting} onPress={deleteAccount} haptic />
+            <Button title="Keep my account" variant="ghost" onPress={() => setConfirmDelete(false)} />
+            {deleteError ? <Text variant="small" style={{ color: colors.danger }}>{deleteError}</Text> : null}
+          </Card>
+        ) : (
+          <Button title="Delete my account" variant="ghost" onPress={() => setConfirmDelete(true)} />
+        )
+      ) : null}
 
       <Button
         title="Sign out"

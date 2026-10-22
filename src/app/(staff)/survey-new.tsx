@@ -10,7 +10,7 @@ import { ChoiceList } from '../../components/ChoiceList';
 import { Input } from '../../components/Input';
 import { Text } from '../../components/Text';
 import { useAuth } from '../../lib/auth';
-import { supabase } from '../../lib/supabase';
+import { callFunction, supabase } from '../../lib/supabase';
 import { colors, layout, space } from '../../theme';
 
 type Draft = { prompt: string; kind: 'text' | 'scale' };
@@ -45,6 +45,12 @@ export default function NewSurvey() {
       .insert(questions.map((q, i) => ({ survey_id: survey.id, position: i, prompt: q.prompt.trim(), kind: q.kind })));
     setBusy(false);
     if (qErr) return setError('The survey was created but the questions were not saved. Please try again.');
+    // Tell every student, in the app and with a phone pop-up.
+    await callFunction('notify-students', {
+      kind: 'survey',
+      title: `New survey: ${title.trim()}`,
+      body: description.trim() || 'Your instructors would like your answers. Open the app to take part.',
+    }).catch(() => undefined);
     router.back();
   }
 

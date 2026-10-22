@@ -42,6 +42,8 @@ export type Application = {
   cv_name: string | null;
   about_text: string | null;
   questions_ready_at: string | null;
+  available_daily: boolean | null;
+  will_teach_children: boolean | null;
   ai_notice_seen_at: string | null;
   submitted_at: string | null;
   interview_format: AnswerFormat | null;

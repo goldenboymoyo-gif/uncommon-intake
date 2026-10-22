@@ -17,7 +17,10 @@ export default function AppLayout() {
   // Tapping a decision notification opens the status screen.
   useEffect(() => {
     const sub = Notifications.addNotificationResponseReceivedListener((response) => {
-      if (response.notification.request.content.data?.kind === 'decision') {
+      const kind = response.notification.request.content.data?.kind;
+      if (kind === 'survey') {
+        router.push('/surveys');
+      } else if (kind === 'decision') {
         refreshProfile();
         router.push('/status');
       } else {

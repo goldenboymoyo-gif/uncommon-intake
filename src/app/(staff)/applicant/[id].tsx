@@ -224,6 +224,8 @@ export default function ApplicantDetail() {
               <Row label="Email" value={app.email} />
               <Row label="Phone or WhatsApp" value={app.phone} />
               <Row label="Where they live" value={app.location || 'Not filled in'} />
+              <Row label="At the hub every weekday, 9am to 4pm" value={app.available_daily == null ? 'Not answered' : app.available_daily ? 'Yes' : 'No'} />
+              <Row label="Will volunteer to teach children" value={app.will_teach_children == null ? 'Not answered' : app.will_teach_children ? 'Yes' : 'No'} />
               <Row label="Hub" value={hub ? `${hub.name}${hub.city ? `, ${hub.city}` : ''}` : 'Not chosen'} />
             </Card>
             <Card style={{ gap: space.md }}>

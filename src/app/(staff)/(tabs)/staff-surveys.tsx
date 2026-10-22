@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
@@ -28,6 +28,7 @@ export default function StaffSurveys() {
     <Screen withTabBar refreshing={loading} onRefresh={reload}>
       <Text variant="h1">Surveys</Text>
       <Button title="New survey" icon="plus" onPress={() => router.push('/survey-new')} />
+      <Button title="Message all students" variant="outline" icon="send" onPress={() => router.push('/announce' as Href)} />
       {!loading && !data?.length ? (
         <EmptyState icon="clipboard" accent={colors.accentMint} title="No surveys yet" body="Create a survey and students will see it in their Surveys tab." />
       ) : (

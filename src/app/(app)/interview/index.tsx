@@ -8,6 +8,7 @@ import { Button } from '../../../components/Button';
 import { Card } from '../../../components/Card';
 import { Chip, ChipTone } from '../../../components/Chip';
 import { EmptyState } from '../../../components/EmptyState';
+import { Commitments, commitmentsAnswered } from '../../../components/Commitments';
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
 import { useQuery } from '../../../lib/data';
@@ -19,7 +20,7 @@ import { colors, space } from '../../../theme';
 export default function InterviewOverview() {
   const { profile } = useAuth();
   const queue = useUploadQueue();
-  const { data, loading, reload } = useQuery(() => fetchInterview(profile!.id), [profile?.id]);
+  const { data, loading, reload, setData } = useQuery(() => fetchInterview(profile!.id), [profile?.id]);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +68,7 @@ export default function InterviewOverview() {
     return { label: 'Not answered', tone: 'neutral' };
   };
 
-  const allSent = !notReady && questions.every((q) => sent(q.id)) && pending.length === 0;
+  const allSent = !notReady && questions.every((q) => sent(q.id)) && pending.length === 0 && commitmentsAnswered(app);
   const firstOpen = questions.find((q) => !sent(q.id) && !pending.some((p) => p.questionId === q.id));
 
   async function finish() {
@@ -105,7 +106,7 @@ export default function InterviewOverview() {
             <Button title="Send my interview" haptic loading={busy} onPress={finish} />
           ) : (
             <Button
-              title={firstOpen ? `Answer question ${firstOpen.position}` : 'Waiting for uploads'}
+              title={firstOpen ? `Answer question ${firstOpen.position}` : pending.length ? 'Waiting for uploads' : 'Answer the two questions above'}
               disabled={!firstOpen}
               onPress={() => firstOpen && router.push({ pathname: '/interview/[n]', params: { n: String(firstOpen.position) } })}
             />
@@ -144,6 +145,8 @@ export default function InterviewOverview() {
             );
           })
         )}
+
+        {!notReady ? <Commitments app={app} onChange={(a) => setData({ ...data, app: a })} /> : null}
 
         {pending.length ? (
           <Card tone="soft" style={{ flexDirection: 'row', gap: space.md, alignItems: 'center' }}>

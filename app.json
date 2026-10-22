@@ -47,9 +47,9 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/splash-icon.png",
-          "imageWidth": 160,
-          "backgroundColor": "#FFFFFF"
+          "image": "./assets/splash-logo.png",
+          "imageWidth": 220,
+          "backgroundColor": "#0747A1"
         }
       ],
       [
@@ -95,6 +95,11 @@
     },
     "updates": {
       "url": "https://u.expo.dev/bd6ca00b-19bd-4de3-869b-dae6dc9c42e8"
+    },
+    "splash": {
+      "image": "./assets/splash-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#0747A1"
     }
   }
 }

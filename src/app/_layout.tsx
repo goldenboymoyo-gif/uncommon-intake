@@ -7,6 +7,7 @@ import { useFonts, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts
 import { NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold } from '@expo-google-fonts/nunito-sans';
 import { AuthProvider, isStaff, useAuth } from '../lib/auth';
 import { UploadQueueRunner } from '../lib/uploadQueue';
+import { BrandSplash } from '../components/BrandSplash';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -25,7 +26,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AuthProvider>
           <StatusBar style="dark" />
-          {fontsLoaded ? <RootStack /> : null}
+          {fontsLoaded ? <RootStack /> : <BrandSplash />}
         </AuthProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
@@ -40,7 +41,7 @@ function RootStack() {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
 
-  if (!ready) return null;
+  if (!ready) return <BrandSplash />;
   const signedIn = !!session && !!profile;
   const staff = signedIn && isStaff(profile);
 

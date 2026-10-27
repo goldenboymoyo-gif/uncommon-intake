@@ -5,6 +5,16 @@ following an application to a decision, and supporting students once they join.
 
 Solo capstone project. React Native with Expo (SDK 57), TypeScript, Expo Router and Supabase.
 
+## Links
+
+- **Staff website** (laptop or phone browser): https://uncommon-intake-staff.netlify.app
+  Staff sign in with their work email. Applicants and students are asked to use the phone app.
+- **Android app**: install link from the latest EAS build (see Build and release).
+- **iPhone**: Expo Go for now; App Store and TestFlight need an Apple Developer account.
+
+To update the staff website after changes: `npx expo export --platform web --output-dir dist`,
+add `dist/_redirects` with `/*    /index.html   200`, then `npx netlify-cli deploy --dir=dist --prod`.
+
 ## What it does
 
 **Applicants**

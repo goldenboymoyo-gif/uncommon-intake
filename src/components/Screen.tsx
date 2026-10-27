@@ -29,6 +29,8 @@ export function Screen({ children, withTabBar, footer, refreshing, onRefresh, co
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[
           { flexGrow: 1, paddingHorizontal: layout.sidePadding, paddingTop: space.sm, paddingBottom: bottom, gap: space.lg },
+          // On a laptop browser, keep content to a comfortable reading width.
+          Platform.OS === 'web' && { width: '100%', maxWidth: 960, alignSelf: 'center' },
           centered && { justifyContent: 'center' },
           contentStyle,
         ]}

@@ -16,7 +16,7 @@ Notifications.setNotificationHandler({
 /** Asks for permission once and saves the Expo push token on the profile. Quietly does nothing if refused. */
 export async function registerForPush(userId: string) {
   try {
-    if (!Device.isDevice) return;
+    if (Platform.OS === 'web' || !Device.isDevice) return;
     if (Platform.OS === 'android') {
       await Notifications.setNotificationChannelAsync('default', {
         name: 'Decisions and reminders',

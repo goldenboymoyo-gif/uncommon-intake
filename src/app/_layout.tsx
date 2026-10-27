@@ -9,6 +9,8 @@ import { AuthProvider, isStaff, useAuth } from '../lib/auth';
 import { UploadQueueRunner } from '../lib/uploadQueue';
 import { BrandSplash } from '../components/BrandSplash';
 import { ConnectionProblem } from '../components/ConnectionProblem';
+import { UseTheApp } from '../components/UseTheApp';
+import { Platform } from 'react-native';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
@@ -44,6 +46,8 @@ function RootStack() {
 
   if (!ready) return <BrandSplash />;
   if (session && !profile) return <ConnectionProblem />;
+  // The website is for staff. Applicants and students need the phone app for interviews.
+  if (Platform.OS === 'web' && profile && !isStaff(profile)) return <UseTheApp />;
   const signedIn = !!session && !!profile;
   const staff = signedIn && isStaff(profile);
 

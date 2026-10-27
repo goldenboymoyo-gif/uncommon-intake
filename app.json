@@ -9,7 +9,8 @@
     "userInterfaceStyle": "light",
     "platforms": [
       "ios",
-      "android"
+      "android",
+      "web"
     ],
     "ios": {
       "supportsTablet": true,
@@ -98,6 +99,15 @@
     "splash": {
       "image": "./assets/splash-logo.png",
       "resizeMode": "contain",
+      "backgroundColor": "#FFFFFF"
+    },
+    "web": {
+      "output": "single",
+      "bundler": "metro",
+      "favicon": "./assets/icon.png",
+      "name": "Uncommon Intake Staff",
+      "shortName": "Uncommon",
+      "themeColor": "#0747A1",
       "backgroundColor": "#FFFFFF"
     }
   }

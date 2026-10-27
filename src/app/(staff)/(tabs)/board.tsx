@@ -76,7 +76,7 @@ export default function Board() {
         />
       </View>
 
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: space.sm }} style={{ marginHorizontal: -layout.sidePadding }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -layout.sidePadding, flexGrow: 0 }} contentContainerStyle={{ gap: space.sm, alignItems: 'center' }}>
         <View style={{ width: layout.sidePadding - space.sm }} />
         {filters.map((f) => {
           const on = filter === f;
@@ -87,7 +87,7 @@ export default function Board() {
               accessibilityRole="button"
               accessibilityState={{ selected: on }}
               onPress={() => setFilter(f)}
-              style={{ minHeight: 36, justifyContent: 'center', paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: on ? colors.ink : colors.soft }}
+              style={{ height: 36, justifyContent: 'center', paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: on ? colors.brand : colors.soft }}
             >
               <Text variant="smallSemi" style={{ color: on ? colors.white : colors.ink }}>
                 {label} {counts[f] ? `(${counts[f]})` : ''}

@@ -8,6 +8,9 @@ import { Button } from '../../components/Button';
 import { ConfirmDelete } from '../../components/ConfirmDelete';
 import { Input } from '../../components/Input';
 import { Text } from '../../components/Text';
+import * as ImagePicker from 'expo-image-picker';
+import { File } from 'expo-file-system';
+import { GraduatePhoto } from '../../components/GraduateCard';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
 import { colors, layout, radius, space } from '../../theme';
@@ -19,6 +22,8 @@ export default function StoryEdit() {
   const { profile } = useAuth();
   const [form, setForm] = useState({ name: '', role: '', employer: '', story: '' });
   const [consent, setConsent] = useState(false);
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
+  const [photoBusy, setPhotoBusy] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const set = (k: keyof typeof form) => (v: string) => setForm((f) => ({ ...f, [k]: v }));
@@ -27,13 +32,14 @@ export default function StoryEdit() {
     if (!id) return;
     supabase
       .from('graduate_stories')
-      .select('name, role, employer, story, consent_given')
+      .select('name, role, employer, story, consent_given, photo_path')
       .eq('id', id)
       .single()
       .then(({ data }) => {
         if (!data) return;
         setForm({ name: data.name, role: data.role, employer: data.employer, story: data.story });
         setConsent(data.consent_given);
+        setPhotoPath(data.photo_path);
       });
   }, [id]);
 
@@ -49,6 +55,7 @@ export default function StoryEdit() {
       employer: form.employer.trim(),
       story: form.story.trim(),
       graduation_year: 2026,
+      photo_path: photoPath,
       consent_given: consent,
       approved_by: consent ? profile.id : null,
       approved_at: consent ? new Date().toISOString() : null,
@@ -61,11 +68,30 @@ export default function StoryEdit() {
     router.back();
   }
 
+  // Photos go to a public bucket because stories show before sign in (only with consent).
+  async function pickPhoto() {
+    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], allowsEditing: true, aspect: [1, 1], quality: 0.6 });
+    if (result.canceled || !result.assets?.[0]) return;
+    setPhotoBusy(true);
+    setError(null);
+    const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
+    const { error: upErr } = await supabase.storage
+      .from('story-photos')
+      .upload(path, await new File(result.assets[0].uri).arrayBuffer(), { contentType: 'image/jpeg' });
+    setPhotoBusy(false);
+    if (upErr) return setError('The photo did not upload. Please try again.');
+    setPhotoPath(path);
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
       <Screen footer={<Button title={id ? 'Save changes' : 'Save story'} loading={busy} disabled={!valid} onPress={save} />}>
         <Text variant="h1">{id ? 'Edit story' : 'Add a graduate story'}</Text>
+        <View style={{ alignItems: 'center', gap: space.sm }}>
+          <GraduatePhoto story={{ name: form.name || '?', photo_path: photoPath }} size={96} />
+          <Button title={photoPath ? 'Change photo' : 'Add a photo'} variant="outline" icon="camera" fullWidth={false} loading={photoBusy} onPress={pickPhoto} />
+        </View>
         <Input label="Graduate's name" value={form.name} onChangeText={set('name')} />
         <Input label="Job title" value={form.role} onChangeText={set('role')} />
         <Input label="Employer" value={form.employer} onChangeText={set('employer')} />

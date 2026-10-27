@@ -1,6 +1,9 @@
-import { View } from 'react-native';
+import { ScrollView, View } from 'react-native';
+import { Href, router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
-import { colors, radius, space } from '../theme';
+import { colors, layout, radius, space } from '../theme';
+import { useAuth } from '../lib/auth';
+import { GraduateCard } from './GraduateCard';
 import { bootcamp, howItWorks, storiesEmpty } from '../content';
 import { fetchGraduateStories, formatDate, intakeState, useQuery } from '../lib/data';
 import type { Intake } from '../lib/types';
@@ -58,22 +61,24 @@ export function HowItWorks() {
 }
 
 export function GraduateStories() {
-  const { data: stories, loading } = useQuery(fetchGraduateStories);
+  const { session } = useAuth();
+  const { data: stories, loading } = useQuery(fetchGraduateStories, [], 'graduate-stories');
   return (
     <View style={{ gap: space.md }}>
       <Text variant="h2">Our 2026 graduates</Text>
       {!loading && (!stories || stories.length === 0) ? (
         <EmptyState icon="award" accent={colors.accentOrange} title={storiesEmpty} />
       ) : (
-        stories?.map((s) => (
-          <Card key={s.id} large>
-            <Text variant="h3">{s.name}</Text>
-            <Text variant="smallSemi" style={{ color: colors.brand }}>
-              {s.role} at {s.employer}
-            </Text>
-            <Text>{s.story}</Text>
-          </Card>
-        ))
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={{ marginHorizontal: -layout.sidePadding, flexGrow: 0 }}
+          contentContainerStyle={{ gap: space.md, paddingHorizontal: layout.sidePadding, alignItems: 'flex-start' }}
+        >
+          {stories?.map((s) => (
+            <GraduateCard key={s.id} story={s} onPress={() => router.push((session ? `/graduate/${s.id}` : `/story/${s.id}`) as Href)} />
+          ))}
+        </ScrollView>
       )}
     </View>
   );

@@ -40,7 +40,7 @@ export function HubsStrip() {
         <Text variant="h2">Our Innovation Hubs</Text>
         <Text variant="small">{open} hubs open in {cities.length} cities. Pick the one closest to you when you apply.</Text>
       </View>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -layout.sidePadding }} contentContainerStyle={{ gap: space.md, paddingHorizontal: layout.sidePadding }}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={{ marginHorizontal: -layout.sidePadding, flexGrow: 0 }} contentContainerStyle={{ gap: space.md, paddingHorizontal: layout.sidePadding, alignItems: 'flex-start' }}>
         {cities.map((city) => {
           const inCity = hubs.filter((h) => (h.city ?? 'Other') === city);
           return (

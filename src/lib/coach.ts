@@ -1,4 +1,4 @@
-import type { Feather } from '@expo/vector-icons';
+import type Feather from '@expo/vector-icons/Feather';
 import { colors } from '../theme';
 
 export type CoachKind = 'cv' | 'cover_letter' | 'interview_practice';

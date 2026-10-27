@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Pressable, Switch, View } from 'react-native';
 import { router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import NetInfo from '@react-native-community/netinfo';
 import { Header } from '../../../components/Header';
 import { Screen } from '../../../components/Screen';

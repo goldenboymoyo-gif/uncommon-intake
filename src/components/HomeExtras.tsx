@@ -1,5 +1,5 @@
 import { ScrollView, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { fetchHubs, formatDate, intakeState, useQuery } from '../lib/data';
 import type { Intake } from '../lib/types';
 import { colors, layout, radius, space } from '../theme';

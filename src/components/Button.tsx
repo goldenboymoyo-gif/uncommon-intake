@@ -1,6 +1,6 @@
 import { ActivityIndicator, Pressable, PressableProps, StyleSheet, View } from 'react-native';
 import * as Haptics from 'expo-haptics';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { colors, fonts, layout, radius, space } from '../theme';
 import { Text } from './Text';
 

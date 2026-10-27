@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Platform, View } from 'react-native';
 import { router, Href } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { Avatar } from './Avatar';
 import { Button } from './Button';
 import { Card } from './Card';

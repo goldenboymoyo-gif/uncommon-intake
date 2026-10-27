@@ -1,6 +1,6 @@
 import { ScrollView, View } from 'react-native';
 import { Href, router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { colors, layout, radius, space } from '../theme';
 import { useAuth } from '../lib/auth';
 import { GraduateCard } from './GraduateCard';

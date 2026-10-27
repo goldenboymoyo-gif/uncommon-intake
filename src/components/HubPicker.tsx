@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Modal, Pressable, ScrollView, View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { Hub } from '../lib/types';
 import { colors, layout, radius, space } from '../theme';

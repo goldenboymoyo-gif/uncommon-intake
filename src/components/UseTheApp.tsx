@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { useAuth } from '../lib/auth';
 import { colors, layout, space } from '../theme';
 import { Button } from './Button';

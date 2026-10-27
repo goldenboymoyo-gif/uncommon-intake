@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { View } from 'react-native';
 import { router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { Header } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { Card } from '../../components/Card';

@@ -1,6 +1,6 @@
 import { View } from 'react-native';
 import { Href, router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
+import Feather from '@expo/vector-icons/Feather';
 import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
 import { Card } from '../../../components/Card';

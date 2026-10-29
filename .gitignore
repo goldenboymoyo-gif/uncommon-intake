@@ -53,3 +53,6 @@ backups/
 
 # Firebase config for Android push; passed to EAS builds as a file environment variable
 google-services.json
+
+# Local Netlify folder
+.netlify

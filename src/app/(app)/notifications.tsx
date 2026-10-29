@@ -5,6 +5,7 @@ import Feather from '@expo/vector-icons/Feather';
 import { Header } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { Card } from '../../components/Card';
+import { ConfirmDelete } from '../../components/ConfirmDelete';
 import { EmptyState } from '../../components/EmptyState';
 import { Text } from '../../components/Text';
 import { useAuth } from '../../lib/auth';
@@ -67,6 +68,17 @@ export default function Notifications() {
             </Card>
           ))
         )}
+        {data?.length ? (
+          <ConfirmDelete
+            label="Clear all notifications"
+            warning="This removes all your notifications. It cannot be undone."
+            onConfirm={async () => {
+              const { error } = await supabase.from('notifications').delete().eq('user_id', profile!.id);
+              if (error) throw new Error('We could not clear your notifications. Please try again.');
+              reload();
+            }}
+          />
+        ) : null}
       </Screen>
     </View>
   );

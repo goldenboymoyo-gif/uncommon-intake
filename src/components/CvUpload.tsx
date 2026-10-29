@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { File } from 'expo-file-system';
 import Feather from '@expo/vector-icons/Feather';
-import { supabase } from '../lib/supabase';
+import { callFunction, supabase } from '../lib/supabase';
 import type { Application } from '../lib/types';
 import { colors, layout, radius, space } from '../theme';
 import { Button } from './Button';
@@ -26,9 +26,10 @@ type Props = {
   showErrors: boolean;
 };
 
-// Upload a CV (PDF or Word, max 5MB). No CV? Write a few lines about yourself instead.
+// Upload a CV (PDF or Word, max 5MB). The server checks it is a CV for what we teach. No CV? Write a few lines about yourself instead.
 export function CvUpload({ application, onChange, onAboutChange, showErrors }: Props) {
   const [busy, setBusy] = useState(false);
+  const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [noCv, setNoCv] = useState(!application.cv_path && !!application.about_text);
   const about = application.about_text ?? '';
@@ -44,24 +45,22 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
     if ((asset.size ?? file.size) > MAX_BYTES) return setError('This file is bigger than 5MB. Please choose a smaller file.');
 
     setBusy(true);
+    setChecking(false);
     try {
-      const path = `${application.applicant_id}/${application.id}/cv.${ext}`;
+      const path = `${application.applicant_id}/${application.id}/cv-${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from('application-cvs')
-        .upload(path, await file.arrayBuffer(), { contentType: TYPES[ext], upsert: true });
-      if (upErr) throw upErr;
-      const { data, error: rowErr } = await supabase
-        .from('applications')
-        .update({ cv_path: path, cv_name: asset.name })
-        .eq('id', application.id)
-        .select()
-        .single();
-      if (rowErr) throw rowErr;
-      onChange(data as Application);
-    } catch {
-      setError('Upload did not work. Check your connection and try again.');
+        .upload(path, await file.arrayBuffer(), { contentType: TYPES[ext] });
+      if (upErr) throw new Error('Upload did not work. Check your connection and try again.');
+      // The server checks it is a real CV that fits what we teach before adding it.
+      setChecking(true);
+      const updated = await callFunction<Application>('check-cv', { application_id: application.id, path, file_name: asset.name });
+      onChange(updated);
+    } catch (e) {
+      setError((e as Error).message);
     } finally {
       setBusy(false);
+      setChecking(false);
     }
   }
 
@@ -104,6 +103,7 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
         loading={busy}
         onPress={pick}
       />
+      {checking ? <Text variant="small" style={{ textAlign: 'center' }}>Checking your CV. This takes a few seconds.</Text> : null}
       {error ? <Text variant="small" style={{ color: colors.danger }}>{error}</Text> : null}
       {showErrors && !application.cv_path ? <Text variant="small" style={{ color: colors.danger }}>Please upload your CV.</Text> : null}
 

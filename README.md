@@ -7,7 +7,7 @@ Solo capstone project. React Native with Expo (SDK 57), TypeScript, Expo Router 
 
 ## Links
 
-- **Staff website** (laptop or phone browser): https://uncommon-intake-staff.netlify.app
+- **Website** (laptop or phone browser): https://uncommon-intake.netlify.app
   Staff sign in with their work email. Applicants and students are asked to use the phone app.
 - **Android app**: install link from the latest EAS build (see Build and release).
 - **iPhone**: Expo Go for now; App Store and TestFlight need an Apple Developer account.

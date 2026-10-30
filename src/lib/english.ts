@@ -1,7 +1,5 @@
 import { callFunction } from './supabase';
 
-export const ENGLISH_LANGUAGES = ['English', 'Shona', 'Ndebele', 'Tonga'] as const;
-
 export const SKILL_LABELS: Record<string, string> = {
   grammar: 'Grammar',
   vocabulary: 'Vocabulary',
@@ -13,7 +11,6 @@ export const SKILL_LABELS: Record<string, string> = {
 
 export type EnglishOverview = {
   level: string | null;
-  language: string;
   points: number;
   streak: number;
   learning_minutes: number;

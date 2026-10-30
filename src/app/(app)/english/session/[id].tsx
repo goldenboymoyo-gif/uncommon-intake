@@ -28,7 +28,7 @@ function outcomeText(o: Outcome) {
   if (o.kind === 'assessment') return `Your placement is finished. Your starting level is ${o.level}, and your plan is ready.`;
   if (o.kind === 'level_test') return o.passed ? `You passed with ${o.score}%. You are now at level ${o.level}.` : `You scored ${o.score}%, and this test needs 75%. Keep practising and try again soon.`;
   if (o.kind === 'weekly') return `You scored ${o.score}% this week. You can review your answers in your results.`;
-  return o.passed ? `Well done. You scored ${o.score}% and passed.` : `You scored ${o.score}%. Let us go over this one again.`;
+  return o.passed ? `Well done. You scored ${o.score}% and passed.` : `You scored ${o.score}%, and that is okay. Try it again and Chipo will help you step by step.`;
 }
 
 export default function EnglishSession() {

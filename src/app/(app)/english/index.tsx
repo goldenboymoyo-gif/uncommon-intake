@@ -7,11 +7,10 @@ import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
 import { Card } from '../../../components/Card';
 import { Chip } from '../../../components/Chip';
-import { ChoiceList } from '../../../components/ChoiceList';
 import { CoachAvatar } from '../../../components/CoachAvatar';
 import { Text } from '../../../components/Text';
 import { subjectById } from '../../../lib/coach';
-import { ENGLISH_LANGUAGES, EnglishOverview, EnglishStart, SKILL_LABELS, startEnglish } from '../../../lib/english';
+import { EnglishOverview, EnglishStart, SKILL_LABELS, startEnglish } from '../../../lib/english';
 import { callFunction } from '../../../lib/supabase';
 import { colors, radius, space } from '../../../theme';
 
@@ -68,11 +67,6 @@ export default function EnglishTutor() {
     }
   }
 
-  async function chooseLanguage(language: string) {
-    setData((d) => (d ? { ...d, language } : d));
-    await callFunction('english-tutor', { action: 'set_language', language }).catch(() => undefined);
-  }
-
   return (
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
@@ -98,11 +92,6 @@ export default function EnglishTutor() {
                 onPress={() => (data.active_assessment ? router.push({ pathname: '/english/session/[id]', params: { id: data.active_assessment } }) : start('assessment', { kind: 'assessment' }))}
               />
             </Card>
-            <View style={{ gap: space.sm }}>
-              <Text variant="smallSemi">Which language helps you most when something is hard?</Text>
-              <Text variant="small">Lessons stay in English. Chipo can add short explanations in this language.</Text>
-              <ChoiceList options={[...ENGLISH_LANGUAGES]} value={data.language} onChange={(v) => chooseLanguage(v as string)} />
-            </View>
           </>
         ) : null}
 
@@ -215,11 +204,6 @@ export default function EnglishTutor() {
                   <Text variant="small" style={{ color: a.earned ? colors.ink : colors.muted }}>{a.title}</Text>
                 </View>
               ))}
-            </View>
-
-            <View style={{ gap: space.sm }}>
-              <Text variant="h3">Help language</Text>
-              <ChoiceList options={[...ENGLISH_LANGUAGES]} value={data.language} onChange={(v) => chooseLanguage(v as string)} />
             </View>
           </>
         ) : null}

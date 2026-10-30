@@ -84,5 +84,7 @@ export function useAuth() {
 }
 
 export const isStaff = (p?: Profile | null) => p?.role === 'staff' || p?.role === 'admin';
+/** Students and graduates can use the career coach and see jobs. */
+export const isLearner = (p?: Profile | null) => p?.role === 'student' || p?.role === 'graduate';
 export const initials = (p?: Pick<Profile, 'first_names' | 'surname'> | null) =>
   `${p?.first_names?.trim()[0] ?? ''}${p?.surname?.trim()[0] ?? ''}`.toUpperCase() || '?';

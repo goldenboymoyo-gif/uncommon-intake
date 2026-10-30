@@ -6,7 +6,7 @@ import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
 import { Text } from '../../../components/Text';
 import { GraduateStories, HowItWorks, IntakeCard } from '../../../components/HomeSections';
-import { useAuth } from '../../../lib/auth';
+import { isLearner, useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, useMyApplication, useQuery, useUnreadCount } from '../../../lib/data';
 import { nextStep, TOTAL_STEPS } from '../../../lib/progress';
 import { colors, layout, radius, space } from '../../../theme';
@@ -16,7 +16,7 @@ export default function Home() {
   const { data: app, loading, reload } = useMyApplication();
   const { data: intake } = useQuery(fetchCurrentIntake);
   const unread = useUnreadCount();
-  const student = profile?.role === 'student';
+  const student = isLearner(profile);
   const step = nextStep(app ?? null);
   const progress = app?.submitted_at ? 1 : app ? (app.current_step - 1) / TOTAL_STEPS : 0;
 
@@ -41,12 +41,12 @@ export default function Home() {
       {student ? (
         <>
           <Card large>
-            <Text variant="h2">You are part of the bootcamp</Text>
-            <Text variant="small">Use the coach for your CV, cover letters and job interview practice. Answer surveys from your instructors.</Text>
+            <Text variant="h2">{profile?.role === 'graduate' ? 'Welcome back, graduate' : 'You are part of the bootcamp'}</Text>
+            <Text variant="small">Chat with your coach about your CV, cover letters, interviews and English. See new job openings.</Text>
           </Card>
           <View style={{ flexDirection: 'row', gap: space.md }}>
             <QuickCard icon="compass" accent={colors.accentBlue} title="Career coach" onPress={() => router.navigate('/coach')} />
-            <QuickCard icon="clipboard" accent={colors.accentMint} title="Surveys" onPress={() => router.navigate('/surveys')} />
+            <QuickCard icon="briefcase" accent={colors.accentMint} title="Jobs" onPress={() => router.navigate('/jobs')} />
           </View>
         </>
       ) : (

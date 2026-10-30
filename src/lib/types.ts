@@ -1,4 +1,4 @@
-export type Role = 'applicant' | 'student' | 'staff' | 'admin';
+export type Role = 'applicant' | 'student' | 'graduate' | 'staff' | 'admin';
 export type AnswerFormat = 'text' | 'audio' | 'video';
 export type Decision = 'accepted' | 'waitlisted' | 'not_accepted';
 export type ReviewStatus =
@@ -107,5 +107,17 @@ export type AppNotification = {
   title: string;
   body: string;
   read_at: string | null;
+  created_at: string;
+};
+
+export type JobOpportunity = {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  details: string;
+  requirements: string;
+  apply_url: string;
+  closes_on: string | null;
   created_at: string;
 };

@@ -5,6 +5,7 @@ import { Screen } from '../../components/Screen';
 import { Button } from '../../components/Button';
 import { GraduateStories, HowItWorks, IntakeCard } from '../../components/HomeSections';
 import { Text } from '../../components/Text';
+import { GetTheApp } from '../../components/WebInstall';
 import { bootcamp } from '../../content';
 import { fetchCurrentIntake, useQuery } from '../../lib/data';
 import { space } from '../../theme';
@@ -30,6 +31,7 @@ export default function Welcome() {
           <Text>{bootcamp.fullTime}.</Text>
           <Text variant="small">{bootcamp.givingBack}</Text>
         </View>
+        <GetTheApp />
         <HowItWorks />
         <GraduateStories />
       </Screen>

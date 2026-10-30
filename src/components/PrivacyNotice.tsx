@@ -20,7 +20,7 @@ const sections: { title: string; body: string[] }[] = [
       'Your name, email, phone or WhatsApp number, where you live, and the hub you choose.',
       'Your CV, or what you write about yourself instead.',
       'Your interview answers: text, voice recordings or short videos, and their written text.',
-      'Your answers to the two commitment questions, your survey answers, coach requests, and an optional profile photo.',
+      'Your answers to the two commitment questions, your survey answers, your chats with the career coach (only you can see these, and you can delete them), and an optional profile photo.',
       'We do not collect your location from your phone, your contacts, or anything you do not give us.',
     ],
   },

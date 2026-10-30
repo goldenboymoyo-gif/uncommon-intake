@@ -12,7 +12,7 @@ import { callFunction } from '../lib/supabase';
 import { pickAndUploadAvatar } from '../lib/avatar';
 import { colors, space } from '../theme';
 
-const roleLabel = { applicant: 'Applicant', student: 'Student', staff: 'Staff', admin: 'Admin' } as const;
+const roleLabel = { applicant: 'Applicant', student: 'Student', graduate: 'Graduate', staff: 'Staff', admin: 'Admin' } as const;
 
 type Link = { icon: keyof typeof Feather.glyphMap; label: string; href: Href };
 

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { Pressable, View } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
-import { File } from 'expo-file-system';
 import Feather from '@expo/vector-icons/Feather';
+import { fileSize, readBytes } from '../lib/files';
 import { callFunction, supabase } from '../lib/supabase';
 import type { Application } from '../lib/types';
 import { colors, layout, radius, space } from '../theme';
@@ -41,8 +41,7 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
     const asset = result.assets[0];
     const ext = asset.name.split('.').pop()?.toLowerCase() ?? '';
     if (!TYPES[ext]) return setError('Please choose a PDF or Word file.');
-    const file = new File(asset.uri);
-    if ((asset.size ?? file.size) > MAX_BYTES) return setError('This file is bigger than 5MB. Please choose a smaller file.');
+    if ((asset.size ?? fileSize(asset.uri)) > MAX_BYTES) return setError('This file is bigger than 5MB. Please choose a smaller file.');
 
     setBusy(true);
     setChecking(false);
@@ -50,7 +49,7 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
       const path = `${application.applicant_id}/${application.id}/cv-${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from('application-cvs')
-        .upload(path, await file.arrayBuffer(), { contentType: TYPES[ext] });
+        .upload(path, await readBytes(asset.uri), { contentType: TYPES[ext] });
       if (upErr) throw new Error('Upload did not work. Check your connection and try again.');
       // The server checks it is a real CV that fits what we teach before adding it.
       setChecking(true);

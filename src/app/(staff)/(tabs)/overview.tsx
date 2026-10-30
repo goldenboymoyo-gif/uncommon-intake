@@ -90,6 +90,13 @@ export default function OverviewScreen() {
           </Card>
 
           <Card large style={{ gap: space.md }}>
+            <Text variant="h3">Jobs and graduates</Text>
+            <Text variant="small">Share job openings with students and graduates, and give graduates access to the coach.</Text>
+            <Button title="Job opportunities" variant="outline" icon="briefcase" onPress={() => router.push('/job-opportunities' as Href)} />
+            <Button title="Add a graduate" variant="ghost" onPress={() => router.push('/graduates' as Href)} />
+          </Card>
+
+          <Card large style={{ gap: space.md }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
               <Feather name="award" size={20} color={colors.accentOrange} />
               <View style={{ flex: 1 }}>

@@ -7,15 +7,19 @@ import { useFonts, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts
 import { NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold } from '@expo-google-fonts/nunito-sans';
 import { AuthProvider, isStaff, useAuth } from '../lib/auth';
 import { UploadQueueRunner } from '../lib/uploadQueue';
+import { setUpWebsite } from '../lib/webPush';
 import { BrandSplash } from '../components/BrandSplash';
 import { ConnectionProblem } from '../components/ConnectionProblem';
-import { UseTheApp } from '../components/UseTheApp';
 import { Platform } from 'react-native';
 import { colors } from '../theme';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useEffect(() => {
+    if (Platform.OS === 'web') setUpWebsite();
+  }, []);
+
   const [fontsLoaded] = useFonts({
     Outfit_600SemiBold,
     Outfit_700Bold,
@@ -46,8 +50,6 @@ function RootStack() {
 
   if (!ready) return <BrandSplash />;
   if (session && !profile) return <ConnectionProblem />;
-  // The website is for staff. Applicants and students need the phone app for interviews.
-  if (Platform.OS === 'web' && profile && !isStaff(profile)) return <UseTheApp />;
   const signedIn = !!session && !!profile;
   const staff = signedIn && isStaff(profile);
 

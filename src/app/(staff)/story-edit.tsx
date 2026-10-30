@@ -9,7 +9,7 @@ import { ConfirmDelete } from '../../components/ConfirmDelete';
 import { Input } from '../../components/Input';
 import { Text } from '../../components/Text';
 import * as ImagePicker from 'expo-image-picker';
-import { File } from 'expo-file-system';
+import { readBytes } from '../../lib/files';
 import { GraduatePhoto } from '../../components/GraduateCard';
 import { useAuth } from '../../lib/auth';
 import { supabase } from '../../lib/supabase';
@@ -77,7 +77,7 @@ export default function StoryEdit() {
     const path = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.jpg`;
     const { error: upErr } = await supabase.storage
       .from('story-photos')
-      .upload(path, await new File(result.assets[0].uri).arrayBuffer(), { contentType: 'image/jpeg' });
+      .upload(path, await readBytes(result.assets[0].uri), { contentType: 'image/jpeg' });
     setPhotoBusy(false);
     if (upErr) return setError('The photo did not upload. Please try again.');
     setPhotoPath(path);

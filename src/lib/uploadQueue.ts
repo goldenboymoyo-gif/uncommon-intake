@@ -5,7 +5,7 @@ import { useEffect, useSyncExternalStore } from 'react';
 import { AppState } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { Directory, File, Paths } from 'expo-file-system';
+import { keepRecording, readBytes, recordingExists, removeRecording } from './files';
 import { supabase } from './supabase';
 import type { AnswerFormat } from './types';
 
@@ -53,37 +53,18 @@ async function save() {
   emit();
 }
 
-const answersDir = () => {
-  const dir = new Directory(Paths.document, 'answers');
-  dir.create({ intermediates: true, idempotent: true });
-  return dir;
-};
-
 /** Adds or replaces the answer for one question. Media is copied somewhere the system will not clear. */
 export async function enqueueAnswer(input: Omit<QueueItem, 'key' | 'attempts' | 'nextTryAt'>) {
   await load();
   const key = `${input.applicationId}:${input.questionId}`;
   let localUri = input.localUri;
   if (localUri) {
-    const source = new File(localUri);
-    const target = new File(answersDir(), `${input.applicationId}-${input.questionId}-${Date.now()}.${input.ext}`);
-    source.copy(target);
-    localUri = target.uri;
+    localUri = await keepRecording(localUri, `${input.applicationId}-${input.questionId}-${Date.now()}.${input.ext}`);
   }
-  removeLocalFile(items.find((i) => i.key === key)?.localUri);
+  removeRecording(items.find((i) => i.key === key)?.localUri);
   items = [...items.filter((i) => i.key !== key), { ...input, localUri, key, attempts: 0, nextTryAt: 0 }];
   await save();
   runQueue();
-}
-
-function removeLocalFile(uri?: string) {
-  if (!uri) return;
-  try {
-    const file = new File(uri);
-    if (file.exists) file.delete();
-  } catch {
-    // already gone
-  }
 }
 
 async function uploadOne(item: QueueItem) {
@@ -107,12 +88,11 @@ async function uploadOne(item: QueueItem) {
 
   // 2. Upload the recording.
   if (item.localUri) {
-    const file = new File(item.localUri);
-    if (!file.exists) throw new Error('The recording is missing on this phone. Please record it again.');
+    if (!(await recordingExists(item.localUri))) throw new Error('The recording is missing on this phone. Please record it again.');
     const path = `${item.userId}/${item.applicationId}/${item.questionId}.${item.ext}`;
     const { error: upErr } = await supabase.storage
       .from('interview-media')
-      .upload(path, await file.arrayBuffer(), { contentType: item.mime, upsert: true });
+      .upload(path, await readBytes(item.localUri), { contentType: item.mime, upsert: true });
     if (upErr) throw new Error(upErr.message);
     const { error: rowErr } = await supabase
       .from('interview_answers')
@@ -137,7 +117,7 @@ export async function runQueue(force = false) {
       if (!force && item.nextTryAt > Date.now()) continue;
       try {
         await uploadOne(item);
-        removeLocalFile(item.localUri);
+        removeRecording(item.localUri);
         items = items.filter((i) => i.key !== item.key);
       } catch (e) {
         const attempts = item.attempts + 1;

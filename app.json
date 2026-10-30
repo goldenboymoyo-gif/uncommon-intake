@@ -105,7 +105,7 @@
       "output": "single",
       "bundler": "metro",
       "favicon": "./assets/icon.png",
-      "name": "Uncommon Intake Staff",
+      "name": "Uncommon Intake",
       "shortName": "Uncommon",
       "themeColor": "#0747A1",
       "backgroundColor": "#FFFFFF"

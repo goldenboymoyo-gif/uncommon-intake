@@ -3,6 +3,7 @@ import * as Device from 'expo-device';
 import * as Notifications from 'expo-notifications';
 import Constants from 'expo-constants';
 import { supabase } from './supabase';
+import { refreshWebPush } from './webPush';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -16,7 +17,8 @@ Notifications.setNotificationHandler({
 /** Asks for permission once and saves the Expo push token on the profile. Quietly does nothing if refused. */
 export async function registerForPush(userId: string) {
   try {
-    if (Platform.OS === 'web' || !Device.isDevice) return;
+    if (Platform.OS === 'web') return refreshWebPush(userId);
+    if (!Device.isDevice) return;
     if (Platform.OS === 'android') {
       await Notifications.setNotificationChannelAsync('default', {
         name: 'Decisions and reminders',

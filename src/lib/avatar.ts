@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as ImagePicker from 'expo-image-picker';
-import { File } from 'expo-file-system';
+import { readBytes } from './files';
 import { supabase } from './supabase';
 
 // Photos are private, so they are shown with short lived signed links. Keep each link for 50 minutes.
@@ -36,7 +36,7 @@ export async function pickAndUploadAvatar(userId: string): Promise<boolean> {
   const path = `${userId}/avatar-${Date.now()}.jpg`;
   const { error } = await supabase.storage
     .from('avatars')
-    .upload(path, await new File(result.assets[0].uri).arrayBuffer(), { contentType: 'image/jpeg' });
+    .upload(path, await readBytes(result.assets[0].uri), { contentType: 'image/jpeg' });
   if (error) throw new Error('The photo did not upload. Please try again.');
   const { error: rowErr } = await supabase.from('profiles').update({ avatar_path: path }).eq('id', userId);
   if (rowErr) throw new Error('The photo did not save. Please try again.');

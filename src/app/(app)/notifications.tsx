@@ -8,6 +8,7 @@ import { Card } from '../../components/Card';
 import { ConfirmDelete } from '../../components/ConfirmDelete';
 import { EmptyState } from '../../components/EmptyState';
 import { Text } from '../../components/Text';
+import { WebNotifications } from '../../components/WebInstall';
 import { useAuth } from '../../lib/auth';
 import { formatDate, useQuery } from '../../lib/data';
 import { supabase } from '../../lib/supabase';
@@ -45,6 +46,7 @@ export default function Notifications() {
       <Header onBack={() => router.back()} />
       <Screen refreshing={loading} onRefresh={reload}>
         <Text variant="h1">Notifications</Text>
+        <WebNotifications />
         {!loading && !data?.length ? (
           <EmptyState icon="bell" title="No notifications yet" body="Decisions and reminders will show here." />
         ) : (

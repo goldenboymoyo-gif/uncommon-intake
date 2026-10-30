@@ -11,6 +11,7 @@ import { StepProgress } from '../../../components/StepProgress';
 import { AudioRecorder, AudioResult } from '../../../components/AudioRecorder';
 import { VideoRecorder, VideoResult } from '../../../components/VideoRecorder';
 import { Text } from '../../../components/Text';
+import { recordingInfo } from '../../../lib/files';
 import { useAuth } from '../../../lib/auth';
 import { useQuery } from '../../../lib/data';
 import { fetchInterview, QUESTION_COUNT } from '../../../lib/interview';
@@ -52,10 +53,7 @@ export default function InterviewQuestion() {
       if (format === 'text') {
         await enqueueAnswer({ userId: profile.id, applicationId: app.id, questionId: question.id, format, text: textValue.trim() });
       } else if (media) {
-        // iOS cameras save .mov files; Android saves .mp4.
-        const isMov = media.uri.toLowerCase().endsWith('.mov');
-        const ext = format === 'audio' ? 'm4a' : isMov ? 'mov' : 'mp4';
-        const mime = format === 'audio' ? 'audio/mp4' : isMov ? 'video/quicktime' : 'video/mp4';
+        const { ext, mime } = await recordingInfo(media.uri, format);
         await enqueueAnswer({
           userId: profile.id,
           applicationId: app.id,

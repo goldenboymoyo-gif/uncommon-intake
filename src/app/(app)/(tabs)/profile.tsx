@@ -1,11 +1,11 @@
 import { Screen } from '../../../components/Screen';
 import { ProfileView } from '../../../components/ProfileView';
 import { Text } from '../../../components/Text';
-import { useAuth } from '../../../lib/auth';
+import { isLearner, useAuth } from '../../../lib/auth';
 
 export default function Profile() {
   const { profile } = useAuth();
-  const student = profile?.role === 'student';
+  const student = isLearner(profile);
   return (
     <Screen withTabBar>
       <Text variant="h1">Profile</Text>

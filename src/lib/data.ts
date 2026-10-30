@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useFocusEffect } from 'expo-router';
 import { supabase } from './supabase';
 import { useAuth } from './auth';
-import type { Application, GraduateStory, Hub, Intake } from './types';
+import type { Application, GraduateStory, Hub, Intake, JobOpportunity } from './types';
 
 // Last result of each screen's query, so returning to a screen shows it at once while it refreshes.
 const lastResults = new Map<string, unknown>();
@@ -164,3 +164,15 @@ export function intakeState(intake: Intake | null): 'open' | 'not_yet' | 'closed
 
 export const formatDate = (iso?: string | null) =>
   iso ? new Date(iso).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
+
+/** Jobs that have not closed yet, newest first. */
+export async function fetchOpenJobs() {
+  const today = new Date().toISOString().slice(0, 10);
+  const { data, error } = await supabase
+    .from('job_opportunities')
+    .select('*')
+    .or(`closes_on.is.null,closes_on.gte.${today}`)
+    .order('created_at', { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as JobOpportunity[];
+}

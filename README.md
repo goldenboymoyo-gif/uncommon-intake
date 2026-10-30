@@ -105,6 +105,7 @@ Secrets (Dashboard: Edge Functions, Secrets). Never commit them:
 | --- | --- |
 | `AI_PROVIDER` | `openai` (or `huggingface`) |
 | `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_TRANSCRIBE_MODEL` | AI (currently `gpt-6-luna` and `gpt-transcribe`) |
+| `OPENAI_TTS_MODEL` | Optional. The voice for Listen in the English Tutor (default `gpt-4o-mini-tts`) |
 | `HF_TOKEN`, `HF_MODEL`, `HF_TRANSCRIBE_MODEL` | Optional Hugging Face fallback |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Decision emails |
 | `CRON_SECRET` | Daily recording clean up (also `cron_secret` and `project_url` in Vault) |

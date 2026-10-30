@@ -20,6 +20,7 @@ type Message = { id: string; sender: 'coach' | 'student'; body: string; from_voi
 type Chat = { id: string; topic: CoachTopic; subject_id: string; subject: string };
 
 const MAX_BYTES = 5 * 1024 * 1024;
+const MIN_THINKING_MS = 2500;
 const TYPES: Record<string, string> = {
   pdf: 'application/pdf',
   docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -59,7 +60,10 @@ export default function CoachChat() {
     const tempId = `temp-${Date.now()}`;
     setMessages((m) => [...m, { id: tempId, sender: 'student', body: shown }]);
     try {
-      const res = await callFunction<{ messages: Message[] }>('coach-chat', { chat_id: id, ...payload });
+      const [res] = await Promise.all([
+        callFunction<{ messages: Message[] }>('coach-chat', { chat_id: id, ...payload }),
+        new Promise((resolve) => setTimeout(resolve, MIN_THINKING_MS)),
+      ]);
       setMessages((m) => [...m.filter((x) => x.id !== tempId), ...res.messages]);
     } catch (e) {
       setMessages((m) => m.filter((x) => x.id !== tempId));

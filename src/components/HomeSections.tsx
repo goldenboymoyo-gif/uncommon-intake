@@ -1,4 +1,4 @@
-import { ScrollView, View } from 'react-native';
+import { Linking, ScrollView, View } from 'react-native';
 import { Href, router } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { colors, layout, radius, space } from '../theme';
@@ -7,6 +7,7 @@ import { GraduateCard } from './GraduateCard';
 import { bootcamp, howItWorks, storiesEmpty } from '../content';
 import { fetchGraduateStories, formatDate, intakeState, useQuery } from '../lib/data';
 import type { Intake } from '../lib/types';
+import { Button } from './Button';
 import { Card } from './Card';
 import { Chip } from './Chip';
 import { EmptyState } from './EmptyState';
@@ -80,6 +81,7 @@ export function GraduateStories() {
           ))}
         </ScrollView>
       )}
+      <Button title="Meet all Uncommon graduates" variant="ghost" onPress={() => Linking.openURL('https://talent.uncommon.org/')} />
     </View>
   );
 }

@@ -17,7 +17,7 @@ export const coachTopics: Record<CoachTopic, { title: string; body: string; pick
   cv: { title: 'CV coach', body: 'Chat with a coach and learn to write a strong CV.', pick: 'Which job is your CV for?', icon: 'file-text', accent: colors.accentBlue },
   cover_letter: { title: 'Cover letter coach', body: 'Learn to write a cover letter that gets read.', pick: 'Which job is your letter for?', icon: 'mail', accent: colors.accentOrange },
   interview: { title: 'Interview practice', body: 'Practise a real interview. The coach asks and follows up on your answers.', pick: 'Which interview are you practising for?', icon: 'message-square', accent: colors.accentMint },
-  english: { title: 'English coach', body: 'Everyday English, work English, pronunciation and spelling.', pick: 'What do you want to learn?', icon: 'book-open', accent: colors.accentRose },
+  english: { title: 'English Tutor', body: 'Find your level and learn with lessons, daily practice and tests.', pick: 'What do you want to learn?', icon: 'book-open', accent: colors.accentRose },
 };
 
 export type CoachSubject = { id: string; label: string; coach: string; photo: ImageSourcePropType };

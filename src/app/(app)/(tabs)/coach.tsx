@@ -1,5 +1,5 @@
 import { View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { Screen } from '../../../components/Screen';
 import { Card } from '../../../components/Card';
@@ -49,7 +49,7 @@ export default function Coach() {
           <Card
             key={kind}
             large
-            onPress={student ? () => router.push({ pathname: '/coach/[kind]', params: { kind } }) : undefined}
+            onPress={student ? () => (kind === 'english' ? router.push('/english' as Href) : router.push({ pathname: '/coach/[kind]', params: { kind } })) : undefined}
             style={{ gap: space.sm, opacity: student ? 1 : 0.7 }}
           >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>

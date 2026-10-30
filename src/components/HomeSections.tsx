@@ -1,4 +1,4 @@
-import { Linking, ScrollView, View } from 'react-native';
+import { Image, Linking, ScrollView, View } from 'react-native';
 import { Href, router } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { colors, layout, radius, space } from '../theme';
@@ -14,6 +14,22 @@ import { EmptyState } from './EmptyState';
 import { Text } from './Text';
 
 const accents = [colors.accentOrange, colors.accentBlue, colors.accentMint];
+
+// Public profiles on the Uncommon Talent Marketplace. The photos stay on that site.
+const marketplaceGraduates = [
+  {
+    name: 'Stacy Chelsea Chengetai Mutamba',
+    role: 'Software Engineer',
+    photo: 'https://talent-profiles.nyc3.cdn.digitaloceanspaces.com/migrated/kg2f537tz1q8eezva9gakhntw18ejbzz.jpeg',
+    url: 'https://talent.uncommon.org/talents/stacy-mutamba-mu5b78n5',
+  },
+  {
+    name: 'Solomon Thokozani Nyathi',
+    role: 'Product Designer',
+    photo: 'https://talent-profiles.nyc3.cdn.digitaloceanspaces.com/migrated/kg2dthav7tqrex7pk56rhbzgq58dqv2a.jpeg',
+    url: 'https://talent.uncommon.org/talents/solomon-nyathi-msx6pjhf',
+  },
+];
 
 export function IntakeCard({ intake }: { intake: Intake | null }) {
   const year = intake?.year ?? 2027;
@@ -81,6 +97,15 @@ export function GraduateStories() {
           ))}
         </ScrollView>
       )}
+      {marketplaceGraduates.map((g) => (
+        <Card key={g.url} onPress={() => Linking.openURL(g.url)} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <Image source={{ uri: g.photo }} accessibilityLabel={g.name} style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.soft }} />
+          <View style={{ flex: 1 }}>
+            <Text variant="bodySemi">{g.name}</Text>
+            <Text variant="small">{g.role}, 2026 graduate</Text>
+          </View>
+        </Card>
+      ))}
       <Button title="Meet all Uncommon graduates" variant="ghost" onPress={() => Linking.openURL('https://talent.uncommon.org/')} />
     </View>
   );

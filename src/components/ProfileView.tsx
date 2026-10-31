@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Platform, View } from 'react-native';
+import { View } from 'react-native';
 import { router, Href } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { Avatar } from './Avatar';
@@ -48,7 +48,6 @@ export function ProfileView({ links }: { links: Link[] }) {
           <Chip label={roleLabel[profile.role]} tone="brand" />
         </View>
       </Card>
-      {Platform.OS !== 'web' ? (
       <Button
         title={profile.avatar_path ? 'Change profile photo' : 'Add a profile photo'}
         variant="outline"
@@ -66,7 +65,6 @@ export function ProfileView({ links }: { links: Link[] }) {
           }
         }}
       />
-      ) : null}
       {photoError ? <Text variant="small" style={{ color: colors.danger }}>{photoError}</Text> : null}
 
       <Card style={{ gap: space.md }}>

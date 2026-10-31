@@ -9,7 +9,7 @@ import { Text } from '../../components/Text';
 import { callFunction } from '../../lib/supabase';
 import { colors, space } from '../../theme';
 
-// Staff send a short message to every student. It appears in Notifications and as a phone pop-up.
+// Staff send a short message to their hub's students. An admin's message goes to every hub. It appears in Notifications and as a phone pop-up.
 export default function Announce() {
   const [title, setTitle] = useState('');
   const [body, setBody] = useState('');
@@ -35,9 +35,9 @@ export default function Announce() {
   return (
     <View style={{ flex: 1 }}>
       <Header onBack={() => router.back()} />
-      <Screen footer={<Button title="Send to all students" haptic loading={busy} disabled={!title.trim() || !body.trim()} onPress={send} />}>
+      <Screen footer={<Button title="Send to students" haptic loading={busy} disabled={!title.trim() || !body.trim()} onPress={send} />}>
         <View style={{ gap: space.xs }}>
-          <Text variant="h1">Message all students</Text>
+          <Text variant="h1">Message your students</Text>
           <Text variant="small">Students see it in Notifications and as a pop-up on their phone.</Text>
         </View>
         <Input label="Title" value={title} onChangeText={setTitle} maxLength={80} />

@@ -113,7 +113,7 @@ Secrets (Dashboard: Edge Functions, Secrets). Never commit them:
 Sign in codes are sent through custom SMTP (Authentication, Emails, SMTP Settings) using the Gmail
 account `uncommonintake.app@gmail.com` with an app password. Both email templates show `{{ .Token }}`.
 
-Make someone staff in the SQL editor: `update profiles set role = 'staff' where email = '...';`
+Make the first admin in the SQL editor: `update profiles set role = 'admin', hub_id = null where email = '...';`. Admins then add staff and choose their hub on Overview, Staff accounts.
 
 The real intake, hubs and checklist: see `supabase/setup/intake_setup_template.sql`.
 Before 1 November 2026, remove the test intake with `supabase/setup/remove_test_intake.sql`.

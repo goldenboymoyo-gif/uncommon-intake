@@ -18,6 +18,12 @@ const accents = [colors.accentOrange, colors.accentBlue, colors.accentMint];
 // Public profiles on the Uncommon Talent Marketplace. The photos stay on that site.
 const marketplaceGraduates = [
   {
+    name: 'Bright Moyo',
+    role: 'Full-Stack Developer',
+    photo: 'https://talent-profiles.nyc3.cdn.digitaloceanspaces.com/migrated/kg296rzefkcdjdwa6cjwynp0ps8dq45w.jpeg',
+    url: 'https://talent.uncommon.org/talents/bright-moyo-mtlagf5j',
+  },
+  {
     name: 'Stacy Chelsea Chengetai Mutamba',
     role: 'Software Engineer',
     photo: 'https://talent-profiles.nyc3.cdn.digitaloceanspaces.com/migrated/kg2f537tz1q8eezva9gakhntw18ejbzz.jpeg',
@@ -82,7 +88,7 @@ export function GraduateStories() {
   const { data: stories, loading } = useQuery(fetchGraduateStories, [], 'graduate-stories');
   return (
     <View style={{ gap: space.md }}>
-      <Text variant="h2">Our 2026 graduates</Text>
+      <Text variant="h2">Our graduates</Text>
       {!loading && (!stories || stories.length === 0) ? (
         <EmptyState icon="award" accent={colors.accentOrange} title={storiesEmpty} />
       ) : (
@@ -102,7 +108,7 @@ export function GraduateStories() {
           <Image source={{ uri: g.photo }} accessibilityLabel={g.name} style={{ width: 56, height: 56, borderRadius: 28, backgroundColor: colors.soft }} />
           <View style={{ flex: 1 }}>
             <Text variant="bodySemi">{g.name}</Text>
-            <Text variant="small">{g.role}, 2026 graduate</Text>
+            <Text variant="small">{g.role}</Text>
           </View>
         </Card>
       ))}

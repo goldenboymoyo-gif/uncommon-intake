@@ -45,7 +45,7 @@ export default function NewSurvey() {
       .insert(questions.map((q, i) => ({ survey_id: survey.id, position: i, prompt: q.prompt.trim(), kind: q.kind })));
     setBusy(false);
     if (qErr) return setError('The survey was created but the questions were not saved. Please try again.');
-    // Tell every student, in the app and with a phone pop-up.
+    // Tell the hub's students, in the app and with a phone pop-up.
     await callFunction('notify-students', {
       kind: 'survey',
       title: `New survey: ${title.trim()}`,

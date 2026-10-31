@@ -7,6 +7,7 @@ import { Card } from '../../../components/Card';
 import { EmptyState } from '../../../components/EmptyState';
 import { Grid } from '../../../components/Grid';
 import { Text } from '../../../components/Text';
+import { useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, useQuery } from '../../../lib/data';
 import { supabase } from '../../../lib/supabase';
 import { colors, radius, space } from '../../../theme';
@@ -23,6 +24,7 @@ type Overview = {
 
 // Every number here is counted from real rows in the database. No rows means zero.
 export default function OverviewScreen() {
+  const { profile } = useAuth();
   const { data, loading, reload } = useQuery(async () => {
     const intake = await fetchCurrentIntake();
     if (!intake) return null;
@@ -95,6 +97,7 @@ export default function OverviewScreen() {
             <Button title="Job opportunities" variant="outline" icon="briefcase" onPress={() => router.push('/job-opportunities' as Href)} />
             <Button title="Add a graduate" variant="ghost" onPress={() => router.push('/graduates' as Href)} />
             <Button title="English progress" variant="ghost" onPress={() => router.push('/english-progress' as Href)} />
+            {profile?.role === 'admin' ? <Button title="Staff accounts" variant="ghost" onPress={() => router.push('/staff-accounts' as Href)} /> : null}
           </Card>
 
           <Card large style={{ gap: space.md }}>

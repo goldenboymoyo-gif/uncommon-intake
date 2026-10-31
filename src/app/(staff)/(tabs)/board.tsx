@@ -8,6 +8,7 @@ import { Chip, reviewStatusChip } from '../../../components/Chip';
 import { EmptyState } from '../../../components/EmptyState';
 import { Grid } from '../../../components/Grid';
 import { Text } from '../../../components/Text';
+import { useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, formatDate, useQuery } from '../../../lib/data';
 import { supabase } from '../../../lib/supabase';
 import type { ReviewStatus } from '../../../lib/types';
@@ -29,6 +30,7 @@ const filters: (ReviewStatus | 'all')[] = [
 ];
 
 export default function Board() {
+  const { profile } = useAuth();
   const [filter, setFilter] = useState<ReviewStatus | 'all'>('all');
   const [search, setSearch] = useState('');
 
@@ -63,6 +65,9 @@ export default function Board() {
   return (
     <Screen withTabBar refreshing={loading} onRefresh={reload}>
       <Text variant="h1">Review board</Text>
+      {profile?.role === 'staff' && !profile.hub_id ? (
+        <Card tone="soft"><Text variant="small">An admin needs to choose your hub. You will see your hub's applicants after that.</Text></Card>
+      ) : null}
 
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.sm, backgroundColor: colors.soft, borderRadius: radius.sm, borderWidth: 1, borderColor: colors.border, paddingHorizontal: space.md, minHeight: layout.inputHeight }}>
         <Feather name="search" size={18} color={colors.muted} />

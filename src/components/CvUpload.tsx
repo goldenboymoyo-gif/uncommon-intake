@@ -26,7 +26,7 @@ type Props = {
   showErrors: boolean;
 };
 
-// Upload a CV (PDF or Word, max 5MB). The server checks it is a CV for what we teach. No CV? Write a few lines about yourself instead.
+// Upload a CV (PDF or Word, max 5MB). No CV? Write a few lines about yourself instead.
 export function CvUpload({ application, onChange, onAboutChange, showErrors }: Props) {
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(false);
@@ -51,7 +51,7 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
         .from('application-cvs')
         .upload(path, await readBytes(asset.uri), { contentType: TYPES[ext] });
       if (upErr) throw new Error('Upload did not work. Check your connection and try again.');
-      // The server checks it is a real CV that fits what we teach before adding it.
+      // The server adds it to the application.
       setChecking(true);
       const updated = await callFunction<Application>('check-cv', { application_id: application.id, path, file_name: asset.name });
       onChange(updated);
@@ -102,7 +102,7 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
         loading={busy}
         onPress={pick}
       />
-      {checking ? <Text variant="small" style={{ textAlign: 'center' }}>Checking your CV. This takes a few seconds.</Text> : null}
+      {checking ? <Text variant="small" style={{ textAlign: 'center' }}>Saving your CV.</Text> : null}
       {error ? <Text variant="small" style={{ color: colors.danger }}>{error}</Text> : null}
       {showErrors && !application.cv_path ? <Text variant="small" style={{ color: colors.danger }}>Please upload your CV.</Text> : null}
 

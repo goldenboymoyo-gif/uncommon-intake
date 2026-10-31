@@ -6,6 +6,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useFonts, Outfit_600SemiBold, Outfit_700Bold } from '@expo-google-fonts/outfit';
 import { NunitoSans_400Regular, NunitoSans_600SemiBold, NunitoSans_700Bold } from '@expo-google-fonts/nunito-sans';
 import { AuthProvider, isStaff, useAuth } from '../lib/auth';
+import { ApplyUpdates } from '../components/ApplyUpdates';
 import { UploadQueueRunner } from '../lib/uploadQueue';
 import { setUpWebsite } from '../lib/webPush';
 import { BrandSplash } from '../components/BrandSplash';
@@ -33,6 +34,7 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <AuthProvider>
           <StatusBar style="dark" />
+          {Platform.OS !== 'web' && !__DEV__ ? <ApplyUpdates /> : null}
           {fontsLoaded ? <RootStack /> : <BrandSplash />}
         </AuthProvider>
       </SafeAreaProvider>

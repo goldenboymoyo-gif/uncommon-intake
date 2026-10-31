@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import { Header } from '../../components/Header';
 import { Screen } from '../../components/Screen';
 import { Button } from '../../components/Button';
@@ -59,8 +59,9 @@ export default function SignIn() {
           error={error}
         />
         <Text variant="small" style={{ color: colors.muted }}>
-          Staff use the same screen with their work email.
+          Staff with an account use the same screen with their work email.
         </Text>
+        <Button title="New staff? Sign up here" variant="ghost" onPress={() => router.push('/staff' as Href)} />
       </Screen>
     </View>
   );

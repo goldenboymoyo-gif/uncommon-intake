@@ -13,6 +13,8 @@ export type Profile = {
   phone: string;
   email: string;
   hub_id: string | null;
+  is_hub_lead: boolean;
+  staff_status: 'choosing' | 'pending' | 'rejected' | null;
   terms_accepted_at: string | null;
   avatar_path: string | null;
 };

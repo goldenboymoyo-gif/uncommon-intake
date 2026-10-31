@@ -6,11 +6,13 @@ import { Screen } from '../../components/Screen';
 import { Button } from '../../components/Button';
 import { Input } from '../../components/Input';
 import { Text } from '../../components/Text';
-import { supabase } from '../../lib/supabase';
+import { useAuth } from '../../lib/auth';
+import { callFunction, supabase } from '../../lib/supabase';
 import { space } from '../../theme';
 
 export default function Verify() {
-  const { email, terms } = useLocalSearchParams<{ email: string; terms?: string }>();
+  const { email, terms, staff } = useLocalSearchParams<{ email: string; terms?: string; staff?: string }>();
+  const { refreshProfile } = useAuth();
   const [code, setCode] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -34,13 +36,16 @@ export default function Verify() {
       // Not awaited: the signed-in screens open straight away.
       supabase.from('profiles').update({ terms_accepted_at: new Date().toISOString() }).eq('id', data.user.id).then(() => undefined);
     }
+    if (staff === '1') {
+      callFunction('staff-access', { action: 'start' }).then(refreshProfile).catch(() => undefined);
+    }
     // The root layout now shows the signed-in screens.
   }
 
   async function resend() {
     setWait(60);
     setError(null);
-    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: terms === '1' } });
+    const { error: err } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: terms === '1' || staff === '1' } });
     if (err) setError('We could not send a new code. Please try again in a minute.');
   }
 

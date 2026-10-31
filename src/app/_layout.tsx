@@ -52,6 +52,8 @@ function RootStack() {
   if (session && !profile) return <ConnectionProblem />;
   const signedIn = !!session && !!profile;
   const staff = signedIn && isStaff(profile);
+  // New staff stay on their own screens until they are approved.
+  const joining = signedIn && (!!profile?.staff_status || (profile?.role === 'staff' && !profile.hub_id));
 
   return (
     <>
@@ -60,10 +62,13 @@ function RootStack() {
         <Stack.Protected guard={!signedIn}>
           <Stack.Screen name="(public)" />
         </Stack.Protected>
-        <Stack.Protected guard={signedIn && !staff}>
+        <Stack.Protected guard={joining}>
+          <Stack.Screen name="(join)" />
+        </Stack.Protected>
+        <Stack.Protected guard={signedIn && !staff && !joining}>
           <Stack.Screen name="(app)" />
         </Stack.Protected>
-        <Stack.Protected guard={staff}>
+        <Stack.Protected guard={staff && !joining}>
           <Stack.Screen name="(staff)" />
         </Stack.Protected>
       </Stack>

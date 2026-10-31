@@ -108,7 +108,7 @@ Secrets (Dashboard: Edge Functions, Secrets). Never commit them:
 | `OPENAI_TTS_MODEL` | Optional. The voice for Listen in the English Tutor (default `gpt-4o-mini-tts`) |
 | `HF_TOKEN`, `HF_MODEL`, `HF_TRANSCRIBE_MODEL` | Optional Hugging Face fallback |
 | `RESEND_API_KEY`, `EMAIL_FROM` | Decision emails |
-| `CRON_SECRET` | Daily recording clean up (also `cron_secret` and `project_url` in Vault) |
+| `CRON_SECRET` | Daily recording clean up, LinkedIn reminders and weekly updates (also `cron_secret` and `project_url` in Vault) |
 
 Sign in codes are sent through custom SMTP (Authentication, Emails, SMTP Settings) using the Gmail
 account `uncommonintake.app@gmail.com` with an app password. Both email templates show `{{ .Token }}`.

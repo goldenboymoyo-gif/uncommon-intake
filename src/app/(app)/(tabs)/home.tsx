@@ -1,5 +1,5 @@
 import { Pressable, View } from 'react-native';
-import { router } from 'expo-router';
+import { Href, router } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { Screen } from '../../../components/Screen';
 import { Card } from '../../../components/Card';
@@ -48,6 +48,15 @@ export default function Home() {
             <QuickCard icon="compass" accent={colors.accentBlue} title="Career coach" onPress={() => router.navigate('/coach')} />
             <QuickCard icon="briefcase" accent={colors.accentMint} title="Jobs" onPress={() => router.navigate('/jobs')} />
           </View>
+          {profile?.role === 'student' ? (
+            <Card onPress={() => router.push('/progress' as Href)} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+              <Feather name="trending-up" size={22} color={colors.accentOrange} />
+              <View style={{ flex: 1 }}>
+                <Text variant="bodySemi">My progress</Text>
+                <Text variant="small">Attendance, LinkedIn post, projects and social accounts</Text>
+              </View>
+            </Card>
+          ) : null}
         </>
       ) : (
         <Card large>

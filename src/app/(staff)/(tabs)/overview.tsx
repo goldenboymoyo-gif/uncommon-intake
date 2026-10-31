@@ -96,6 +96,7 @@ export default function OverviewScreen() {
             <Text variant="small">Share job openings with students and graduates, and give graduates access to the coach.</Text>
             <Button title="Job opportunities" variant="outline" icon="briefcase" onPress={() => router.push('/job-opportunities' as Href)} />
             <Button title="Add a graduate" variant="ghost" onPress={() => router.push('/graduates' as Href)} />
+            <Button title="Student progress" variant="ghost" onPress={() => router.push('/student-progress' as Href)} />
             <Button title="English progress" variant="ghost" onPress={() => router.push('/english-progress' as Href)} />
             {profile?.role === 'admin' || profile?.is_hub_lead ? <Button title="Staff requests" variant="ghost" onPress={() => router.push('/staff-requests' as Href)} /> : null}
             {profile?.role === 'admin' ? <Button title="Staff accounts" variant="ghost" onPress={() => router.push('/staff-accounts' as Href)} /> : null}

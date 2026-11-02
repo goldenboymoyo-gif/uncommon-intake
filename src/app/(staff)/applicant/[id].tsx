@@ -102,10 +102,11 @@ export default function ApplicantDetail() {
         refreshing={loading}
         onRefresh={reload}
         footer={
-          decided ? null : (
+          // The waiting list is not final: staff can still accept or decline from it.
+          decided && app.decision !== 'waitlisted' ? null : (
             <View style={{ flexDirection: 'row', gap: space.sm }}>
               <Button title="Decline" variant="danger" fullWidth={false} style={{ flex: 1 }} onPress={() => decide('not_accepted')} />
-              <Button title="Waitlist" variant="outline" fullWidth={false} style={{ flex: 1 }} onPress={() => decide('waitlisted')} />
+              {!decided ? <Button title="Waitlist" variant="outline" fullWidth={false} style={{ flex: 1 }} onPress={() => decide('waitlisted')} /> : null}
               <Button title="Accept" fullWidth={false} style={{ flex: 1 }} onPress={() => decide('accepted')} />
             </View>
           )

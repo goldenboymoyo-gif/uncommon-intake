@@ -46,9 +46,11 @@ function RootStack() {
   const { session, profile, loading, profileFailed } = useAuth();
   const ready = !loading && (!session || !!profile || profileFailed);
 
+  // Some Android phones show the app icon as the native splash, so leave it as soon as
+  // our own uncommon INTAKE splash can show, and not only when sign in has loaded.
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
-  }, [ready]);
+    SplashScreen.hideAsync();
+  }, []);
 
   if (!ready) return <BrandSplash />;
   if (session && !profile) return <ConnectionProblem />;

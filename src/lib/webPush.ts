@@ -14,17 +14,8 @@ export const pushPermission = () => ('Notification' in window ? Notification.per
 
 const keyBytes = (key: string) => Uint8Array.from(atob(key.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(key.length / 4) * 4, '=')), (c) => c.charCodeAt(0));
 
-/** Adds the install details and the notification worker to the page. */
+/** Adds the notification worker. The install details are in public/index.html, where iPhones can read them. */
 export function setUpWebsite() {
-  const add = (tag: string, attrs: Record<string, string>) => {
-    const el = document.createElement(tag);
-    Object.entries(attrs).forEach(([k, v]) => el.setAttribute(k, v));
-    document.head.appendChild(el);
-  };
-  add('link', { rel: 'manifest', href: '/manifest.webmanifest' });
-  add('link', { rel: 'apple-touch-icon', href: '/icon-192.png' });
-  add('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' });
-  add('meta', { name: 'apple-mobile-web-app-title', content: 'Uncommon Intake' });
   if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => undefined);
 }
 

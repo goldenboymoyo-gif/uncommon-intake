@@ -1,24 +1,17 @@
-import { useEffect } from 'react';
-import { StyleSheet } from 'react-native';
-import Animated, { FadeOut, useAnimatedStyle, useSharedValue, withRepeat, withTiming } from 'react-native-reanimated';
-import { colors, fonts, space } from '../theme';
-import { Logo } from './Logo';
-import { Text } from './Text';
+import { Image, Platform, StyleSheet } from 'react-native';
+import Animated, { FadeOut } from 'react-native-reanimated';
+import { colors } from '../theme';
 
-// Shown while the app starts, matching the native splash: blue wordmark and INTAKE on white.
+// Shown while the app starts. It must look exactly like the first splash, so people only ever see one:
+// on phones the native splash (same image, same size), on the website the one in public/index.html.
 export function BrandSplash() {
-  const pulse = useSharedValue(1);
-  useEffect(() => {
-    pulse.value = withRepeat(withTiming(0.6, { duration: 900 }), -1, true);
-  }, []);
-  const style = useAnimatedStyle(() => ({ opacity: pulse.value }));
-
   return (
     <Animated.View exiting={FadeOut.duration(300)} style={[StyleSheet.absoluteFill, styles.wrap]} accessibilityLabel="Loading">
-      <Animated.View style={[style, { alignItems: 'center', gap: space.lg }]}>
-        <Logo height={22} />
-        <Text style={{ fontFamily: fonts.bodyBold, fontSize: 14, letterSpacing: 6, color: colors.brand }}>INTAKE</Text>
-      </Animated.View>
+      {Platform.OS === 'web' ? (
+        <Image source={{ uri: '/splash-text.png' }} style={{ width: 200, height: 47 }} />
+      ) : (
+        <Image source={require('../../assets/splash-logo.png')} style={{ width: 240, height: 240 }} />
+      )}
     </Animated.View>
   );
 }

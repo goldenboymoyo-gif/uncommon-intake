@@ -25,6 +25,7 @@ export function GetTheApp() {
         <View style={{ gap: space.sm }}>
           <Text variant="small">{android ? 'Download the app for your Android phone. Your phone may ask you to allow the install.' : 'Android phones: download the app.'}</Text>
           <Button title="Download for Android" icon="download" onPress={() => { window.location.href = '/uncommon-intake.apk'; }} />
+          <Text variant="small">If it does not install, delete the downloaded file, make sure you have 300 MB free, and download it again on good Wi-Fi.</Text>
         </View>
       ) : null}
       {!android ? (

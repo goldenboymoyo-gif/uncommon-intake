@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { createElement, useEffect, useState } from 'react';
+import { Linking, Platform, View } from 'react-native';
 import { useAudioPlayer, useAudioPlayerStatus } from 'expo-audio';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { supabase } from '../lib/supabase';
@@ -49,10 +49,29 @@ export function AudioPlayback({ path }: { path: string }) {
 
 export function VideoPlayback({ path }: { path: string }) {
   const url = useSignedUrl(path);
-  const player = useVideoPlayer(url);
   return (
-    <View style={{ width: '100%', aspectRatio: 3 / 4, maxHeight: 420, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.ink }}>
-      {url ? <VideoView player={player} style={{ flex: 1 }} nativeControls contentFit="contain" /> : null}
+    <View style={{ gap: space.sm }}>
+      <View style={{ width: '100%', aspectRatio: 3 / 4, maxHeight: 420, borderRadius: radius.sm, overflow: 'hidden', backgroundColor: colors.ink }}>
+        {url ? (Platform.OS === 'web' ? <WebVideo url={url} /> : <PhoneVideo url={url} />) : null}
+      </View>
+      {/* If a video will not play here (some phone formats), it opens in the device's own player. */}
+      <Button title="Open the video" variant="ghost" icon="external-link" disabled={!url} onPress={() => url && Linking.openURL(url)} />
     </View>
   );
+}
+
+function PhoneVideo({ url }: { url: string }) {
+  const player = useVideoPlayer(url);
+  return <VideoView player={player} style={{ flex: 1 }} nativeControls contentFit="contain" />;
+}
+
+// Browsers play best with their own video player and its controls.
+function WebVideo({ url }: { url: string }) {
+  return createElement('video', {
+    src: url,
+    controls: true,
+    playsInline: true,
+    preload: 'metadata',
+    style: { width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000' },
+  });
 }

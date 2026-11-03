@@ -14,6 +14,7 @@ import { useAuth } from '../../../../lib/auth';
 import { subjectById } from '../../../../lib/coach';
 import { readBytes, recordingInfo } from '../../../../lib/files';
 import { callFunction, supabase } from '../../../../lib/supabase';
+import { unlockWebAudio } from '../../../../lib/webSpeech';
 import { colors, fonts, radius, space } from '../../../../theme';
 
 type Message = { id: string; sender: 'teacher' | 'student'; body: string; speak_text?: string | null; from_voice?: boolean };
@@ -91,8 +92,10 @@ export default function EnglishSession() {
   async function listen(message: Message, rate: number) {
     setSpeaking(message.id);
     setError(null);
+    const playOnWeb = unlockWebAudio();
     try {
       const { url } = await callFunction<{ url: string }>('english-tutor', { action: 'speak', message_id: message.id });
+      if (playOnWeb) return await playOnWeb(url, rate);
       player.replace({ uri: url });
       player.setPlaybackRate(rate);
       player.play();

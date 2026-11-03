@@ -69,6 +69,7 @@ export default function Board() {
         <TextInput
           value={search}
           onChangeText={setSearch}
+          id="search-applicants"
           placeholder="Search by name"
           placeholderTextColor={colors.muted}
           accessibilityLabel="Search by name"

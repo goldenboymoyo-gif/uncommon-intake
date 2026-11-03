@@ -14,6 +14,7 @@ import { useAuth } from '../../../../lib/auth';
 import { CoachTopic, subjectById } from '../../../../lib/coach';
 import { readBytes, recordingInfo } from '../../../../lib/files';
 import { callFunction, supabase } from '../../../../lib/supabase';
+import { unlockWebAudio } from '../../../../lib/webSpeech';
 import { colors, fonts, radius, space } from '../../../../theme';
 
 type Message = { id: string; sender: 'coach' | 'student'; body: string; from_voice?: boolean };
@@ -102,12 +103,14 @@ export default function CoachChat() {
   async function listen(message: Message) {
     setSpeaking(message.id);
     setError(null);
+    const playOnWeb = unlockWebAudio();
     try {
       const { url } = await callFunction<{ url: string }>('coach-chat', { action: 'speak', text: message.body });
+      if (playOnWeb) return await playOnWeb(url);
       player.replace({ uri: url });
       player.play();
-    } catch (e) {
-      setError((e as Error).message);
+    } catch {
+      setError('The sound is not available right now. You can read the message instead.');
     } finally {
       setSpeaking(null);
     }

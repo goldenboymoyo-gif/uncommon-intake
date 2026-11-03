@@ -74,9 +74,9 @@ export default function ApplicantDetail() {
     reload();
   }
 
-  async function openCv() {
-    if (!app.cv_path) return;
-    const { data: signed } = await supabase.storage.from('application-cvs').createSignedUrl(app.cv_path, 60 * 10);
+  async function openFile(path: string | null) {
+    if (!path) return;
+    const { data: signed } = await supabase.storage.from('application-cvs').createSignedUrl(path, 60 * 10);
     if (signed?.signedUrl) Linking.openURL(signed.signedUrl);
   }
 
@@ -232,11 +232,16 @@ export default function ApplicantDetail() {
             <Card style={{ gap: space.md }}>
               <Text variant="h3">{STEP_TITLES[2]}</Text>
               {app.cv_path ? (
-                <Button title={`Open CV (${app.cv_name ?? 'file'})`} variant="outline" icon="file-text" onPress={openCv} />
+                <Button title={`Open CV (${app.cv_name ?? 'file'})`} variant="outline" icon="file-text" onPress={() => openFile(app.cv_path)} />
               ) : app.about_text ? (
                 <Row label="No CV. They wrote about themselves:" value={app.about_text} />
               ) : (
                 <Text variant="small">No CV uploaded yet.</Text>
+              )}
+              {app.letter_path ? (
+                <Button title={`Open motivation letter (${app.letter_name ?? 'file'})`} variant="outline" icon="mail" onPress={() => openFile(app.letter_path)} />
+              ) : (
+                <Text variant="small">No motivation letter uploaded.</Text>
               )}
             </Card>
           </>

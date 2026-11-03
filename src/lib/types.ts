@@ -42,6 +42,8 @@ export type Application = {
   current_step: number;
   cv_path: string | null;
   cv_name: string | null;
+  letter_path: string | null;
+  letter_name: string | null;
   about_text: string | null;
   questions_ready_at: string | null;
   available_daily: boolean | null;

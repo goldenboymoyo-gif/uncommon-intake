@@ -26,13 +26,13 @@ type Props = {
   showErrors: boolean;
 };
 
-// Upload a CV (PDF or Word, max 5MB). No CV? Write a few lines about yourself instead.
-export function CvUpload({ application, onChange, onAboutChange, showErrors }: Props) {
+type Kind = 'cv' | 'letter';
+
+// Picks a PDF or Word file (max 5MB), uploads it and adds it to the application.
+function useFileUpload(application: Application, onChange: (app: Application) => void, kind: Kind) {
   const [busy, setBusy] = useState(false);
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [noCv, setNoCv] = useState(!application.cv_path && !!application.about_text);
-  const about = application.about_text ?? '';
 
   async function pick() {
     setError(null);
@@ -46,14 +46,14 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
     setBusy(true);
     setChecking(false);
     try {
-      const path = `${application.applicant_id}/${application.id}/cv-${Date.now()}.${ext}`;
+      const path = `${application.applicant_id}/${application.id}/${kind}-${Date.now()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from('application-cvs')
         .upload(path, await readBytes(asset.uri), { contentType: TYPES[ext] });
       if (upErr) throw new Error('Upload did not work. Check your connection and try again.');
       // The server adds it to the application.
       setChecking(true);
-      const updated = await callFunction<Application>('check-cv', { application_id: application.id, path, file_name: asset.name });
+      const updated = await callFunction<Application>('check-cv', { application_id: application.id, path, file_name: asset.name, kind });
       onChange(updated);
     } catch (e) {
       setError((e as Error).message);
@@ -62,6 +62,15 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
       setChecking(false);
     }
   }
+
+  return { busy, checking, error, pick };
+}
+
+// Upload a CV (PDF or Word, max 5MB). No CV? Write a few lines about yourself instead.
+export function CvUpload({ application, onChange, onAboutChange, showErrors }: Props) {
+  const { busy, checking, error, pick } = useFileUpload(application, onChange, 'cv');
+  const [noCv, setNoCv] = useState(!application.cv_path && !!application.about_text);
+  const about = application.about_text ?? '';
 
   if (noCv) {
     const short = about.trim().length < MIN_ABOUT_CHARS;
@@ -115,5 +124,38 @@ export function CvUpload({ application, onChange, onAboutChange, showErrors }: P
   );
 }
 
+// Upload the motivation letter (PDF or Word, max 5MB). Everyone sends one.
+export function LetterUpload({ application, onChange, showErrors }: Omit<Props, 'onAboutChange'>) {
+  const { busy, checking, error, pick } = useFileUpload(application, onChange, 'letter');
+  return (
+    <View style={{ gap: space.md }}>
+      {application.letter_path ? (
+        <Card style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
+          <View style={{ width: 40, height: 40, borderRadius: radius.sm, backgroundColor: colors.soft, alignItems: 'center', justifyContent: 'center' }}>
+            <Feather name="mail" size={20} color={colors.accentBlue} />
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text variant="bodySemi" numberOfLines={1}>{application.letter_name ?? 'Your letter'}</Text>
+            <Text variant="small">Uploaded</Text>
+          </View>
+        </Card>
+      ) : null}
+      <Button
+        title={application.letter_path ? 'Replace letter' : 'Upload your motivation letter'}
+        variant={application.letter_path ? 'outline' : 'primary'}
+        icon="upload"
+        loading={busy}
+        onPress={pick}
+      />
+      {checking ? <Text variant="small" style={{ textAlign: 'center' }}>Saving your letter.</Text> : null}
+      {error ? <Text variant="small" style={{ color: colors.danger }}>{error}</Text> : null}
+      {showErrors && !application.letter_path ? <Text variant="small" style={{ color: colors.danger }}>Please upload your motivation letter.</Text> : null}
+    </View>
+  );
+}
+
 export const hasCvOrAbout = (app: Application) =>
   !!app.cv_path || (app.about_text ?? '').trim().length >= MIN_ABOUT_CHARS;
+
+/** Both documents are needed: a CV (or the about text) and a motivation letter. */
+export const hasDocuments = (app: Application) => hasCvOrAbout(app) && !!app.letter_path;

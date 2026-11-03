@@ -7,7 +7,7 @@ import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
 import { Card } from '../../../components/Card';
 import { AiNotice } from '../../../components/AiNotice';
-import { hasCvOrAbout } from '../../../components/CvUpload';
+import { hasCvOrAbout, hasDocuments } from '../../../components/CvUpload';
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, fetchHubs, getOrCreateApplication, useQuery } from '../../../lib/data';
@@ -32,7 +32,7 @@ export default function Review() {
   const { app, hub } = data;
 
   const detailsDone = !!(app.first_names.trim() && app.surname.trim() && app.email.trim() && app.phone.trim() && app.location.trim() && app.hub_id);
-  const ready = detailsDone && hasCvOrAbout(app);
+  const ready = detailsDone && hasDocuments(app);
 
   async function send() {
     if (!ready || !understood) return;
@@ -75,6 +75,7 @@ export default function Review() {
           ) : (
             <Row label="About you (no CV)" value={app.about_text?.trim() || 'Not filled in'} missing={!hasCvOrAbout(app)} />
           )}
+          <Row label="Motivation letter" value={app.letter_name ?? 'Not uploaded'} missing={!app.letter_path} />
         </Section>
 
         <AiNotice />

@@ -6,7 +6,7 @@ import { Screen } from '../../../components/Screen';
 import { Button } from '../../../components/Button';
 import { Input } from '../../../components/Input';
 import { HubPicker } from '../../../components/HubPicker';
-import { CvUpload, hasCvOrAbout } from '../../../components/CvUpload';
+import { CvUpload, LetterUpload, hasDocuments } from '../../../components/CvUpload';
 import { StepProgress } from '../../../components/StepProgress';
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
@@ -65,7 +65,7 @@ export default function ApplicationStep() {
     location: !app.location.trim() ? 'Please tell us where you live.' : null,
     hub: !app.hub_id ? 'Please choose a hub.' : null,
   };
-  const stepValid = step === 1 ? !Object.values(errors).some(Boolean) : hasCvOrAbout(app);
+  const stepValid = step === 1 ? !Object.values(errors).some(Boolean) : hasDocuments(app);
 
   async function next() {
     setTouched(true);
@@ -125,6 +125,9 @@ export default function ApplicationStep() {
               questions about your own experience.
             </Text>
             <CvUpload application={app} onChange={setApp} onAboutChange={(v) => setField('about_text', v)} showErrors={touched} />
+            <Text variant="h3">Motivation letter</Text>
+            <Text>Tell us why you want to join the bootcamp and what you hope to do with technology. Upload it as a PDF or Word file, up to 5MB.</Text>
+            <LetterUpload application={app} onChange={setApp} showErrors={touched} />
           </>
         )}
       </Screen>

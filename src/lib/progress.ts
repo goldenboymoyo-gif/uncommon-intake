@@ -35,7 +35,7 @@ export function nextStep(app: Application | null): NextStep {
   if (!app.interview_sent_at) {
     return {
       title: 'Your interview',
-      body: 'Answer 5 short questions by text, voice or video.',
+      body: 'Answer 10 short questions by text, voice or video.',
       action: app.recording_consent_at ? 'Continue interview' : 'Start interview',
       href: app.recording_consent_at ? '/interview' : '/interview/consent',
     };

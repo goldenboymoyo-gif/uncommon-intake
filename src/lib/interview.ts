@@ -2,7 +2,8 @@ import { supabase } from './supabase';
 import { fetchCurrentIntake, getOrCreateApplication } from './data';
 import type { Application, InterviewAnswer, InterviewQuestion } from './types';
 
-export const QUESTION_COUNT = 5;
+// New applicants get 10 questions. Anyone who already had 5 keeps their 5, so screens count what is there.
+export const QUESTION_COUNT = 10;
 export const MAX_AUDIO_SECONDS = 180;
 export const MAX_VIDEO_SECONDS = 90;
 

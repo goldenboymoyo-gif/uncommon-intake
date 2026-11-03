@@ -3,6 +3,7 @@ import { Linking, Pressable, View } from 'react-native';
 import { router, useLocalSearchParams } from 'expo-router';
 import Feather from '@expo/vector-icons/Feather';
 import { Header } from '../../../components/Header';
+import { ConfirmDelete } from '../../../components/ConfirmDelete';
 import { Screen } from '../../../components/Screen';
 import { AiLabel } from '../../../components/AiLabel';
 import { Button } from '../../../components/Button';
@@ -265,6 +266,14 @@ export default function ApplicantDetail() {
           <Feather name="users" size={16} color={colors.brand} />
           <Text variant="smallSemi" style={{ color: colors.brand }}>{peopleDecide}</Text>
         </View>
+        <ConfirmDelete
+          label="Delete this account"
+          warning={`This deletes ${app.first_names}'s account and everything with it: the application, CV, letter, answers and recordings. It cannot be undone.`}
+          onConfirm={async () => {
+            await callFunction('delete-account', { user_id: app.applicant_id });
+            router.back();
+          }}
+        />
       </Screen>
     </View>
   );

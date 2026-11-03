@@ -14,7 +14,7 @@ import { Text } from '../../../components/Text';
 import { recordingInfo } from '../../../lib/files';
 import { useAuth } from '../../../lib/auth';
 import { useQuery } from '../../../lib/data';
-import { fetchInterview, QUESTION_COUNT } from '../../../lib/interview';
+import { fetchInterview } from '../../../lib/interview';
 import { enqueueAnswer } from '../../../lib/uploadQueue';
 import { colors, space } from '../../../theme';
 
@@ -86,7 +86,7 @@ export default function InterviewQuestion() {
           </>
         }
       >
-        <StepProgress current={n} total={QUESTION_COUNT} label="Question" />
+        <StepProgress current={n} total={questions.length} label="Question" />
         <Card large tone="soft">
           {question.ai_generated ? <AiLabel note="question written from your CV" /> : null}
           <Text variant="h2">{question.prompt}</Text>

@@ -6,7 +6,7 @@ import { Card } from './Card';
 import { Text } from './Text';
 
 const points: { icon: keyof typeof Feather.glyphMap; text: string }[] = [
-  { icon: 'file-text', text: 'AI reads your CV and writes 5 interview questions about your own skills and experience.' },
+  { icon: 'file-text', text: 'AI reads your CV and motivation letter and writes 10 interview questions about your own skills and experience.' },
   { icon: 'type', text: 'If you answer by voice or video, AI turns your words into text.' },
   { icon: 'align-left', text: 'AI writes a short summary of each answer to help our team read faster. Staff always see your full answer too.' },
   { icon: 'eye-off', text: 'AI does not score your CV, look at your face, judge your voice or tone, or guess your feelings.' },

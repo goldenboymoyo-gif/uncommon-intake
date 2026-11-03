@@ -36,7 +36,7 @@ const sections: { title: string; body: string[] }[] = [
   {
     title: 'How we use AI',
     body: [
-      'AI reads your CV to write 5 interview questions about your own experience.',
+      'AI reads your CV and motivation letter to write 10 interview questions about your own experience.',
       'AI turns spoken answers into text and writes short summaries for staff. All AI text is labelled "AI generated".',
       'AI never decides who gets a place, never scores you, and never looks at your face, voice tone or feelings. People make every decision.',
       'Your information is sent to our AI provider only to do these tasks. It is not used to train their models.',

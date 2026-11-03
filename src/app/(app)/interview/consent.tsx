@@ -71,7 +71,7 @@ export default function Consent() {
       <Screen footer={<Button title="I agree, continue" haptic loading={busy} disabled={!format} onPress={agree} />}>
         <View style={{ gap: space.xs }}>
           <Text variant="h1">Before your interview</Text>
-          <Text variant="small">You will answer 5 short questions, one at a time. You can stop and finish later.</Text>
+          <Text variant="small">You will answer 10 short questions, one at a time. You can stop and finish later.</Text>
         </View>
 
         <Card large tone="soft" style={{ gap: space.lg }}>

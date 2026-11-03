@@ -11,7 +11,7 @@ export const bootcamp = {
 // How this app works. These describe the app itself, not the bootcamp.
 export const howItWorks = [
   { icon: 'user-plus', title: 'Create your account', body: 'Sign up with your email, fill in your details, choose your hub and upload your CV.' },
-  { icon: 'mic', title: 'Answer 5 questions', body: 'Questions about your own experience, from your CV. Answer by typing, by voice, or with a short video.' },
+  { icon: 'mic', title: 'Answer 10 questions', body: 'Questions about your own experience, from your CV and motivation letter. Answer by typing, by voice, or with a short video.' },
   { icon: 'check-circle', title: 'Get your decision', body: 'Our team reads every application. You get the decision in the app and by email.' },
 ] as const;
 

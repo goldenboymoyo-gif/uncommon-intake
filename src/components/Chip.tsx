@@ -35,7 +35,7 @@ export function Chip({ label, tone = 'neutral' }: { label: string; tone?: ChipTo
 export const reviewStatusChip: Record<ReviewStatus, { label: string; tone: ChipTone }> = {
   not_started: { label: 'Not started', tone: 'neutral' },
   in_progress: { label: 'In progress', tone: 'warning' },
-  all_answered: { label: 'All 5 answered', tone: 'brand' },
+  all_answered: { label: 'All answered', tone: 'brand' },
   ready_to_review: { label: 'Ready to review', tone: 'brand' },
   in_review: { label: 'In review', tone: 'warning' },
   needs_help: { label: 'Needs help', tone: 'danger' },

@@ -12,7 +12,7 @@ import { Commitments, commitmentsAnswered } from '../../../components/Commitment
 import { Text } from '../../../components/Text';
 import { useAuth } from '../../../lib/auth';
 import { useQuery } from '../../../lib/data';
-import { fetchInterview, QUESTION_COUNT } from '../../../lib/interview';
+import { fetchInterview } from '../../../lib/interview';
 import { callFunction, supabase } from '../../../lib/supabase';
 import { runQueue, useUploadQueue } from '../../../lib/uploadQueue';
 import { colors, space } from '../../../theme';
@@ -46,7 +46,7 @@ export default function InterviewOverview() {
     }
   }
 
-  const needsQuestions = !!data && !!data.app.submitted_at && data.questions.length < QUESTION_COUNT;
+  const needsQuestions = !!data && !!data.app.submitted_at && data.questions.length === 0;
   useEffect(() => {
     if (needsQuestions && !preparing) prepareQuestions();
   }, [needsQuestions]);
@@ -54,7 +54,7 @@ export default function InterviewOverview() {
   if (!data) return <View style={{ flex: 1 }}><Header onBack={() => router.back()} /></View>;
   const { app, questions, answers } = data;
   const pending = queue.filter((q) => q.applicationId === app.id);
-  const notReady = questions.length < QUESTION_COUNT;
+  const notReady = questions.length === 0;
   // An answer counts as sent once its text is saved or its recording is uploaded.
   const sent = (questionId: string) => {
     const a = answers[questionId];
@@ -116,7 +116,7 @@ export default function InterviewOverview() {
         <View style={{ gap: space.xs }}>
           <Text variant="h1">Your interview</Text>
           <Text variant="small">
-            5 questions about your own experience, written by AI from your CV. Answer them in any order. Tap a question to answer or change it.
+            10 questions about your own experience, written by AI from your CV and motivation letter. Answer them in any order. Tap a question to answer or change it.
           </Text>
         </View>
 
@@ -135,7 +135,7 @@ export default function InterviewOverview() {
             return (
               <Card key={q.id} onPress={() => router.push({ pathname: '/interview/[n]', params: { n: String(q.position) } })} style={{ gap: space.sm }}>
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Text variant="tiny">QUESTION {q.position} OF {QUESTION_COUNT}</Text>
+                  <Text variant="tiny">QUESTION {q.position} OF {questions.length}</Text>
                   <Chip label={s.label} tone={s.tone} />
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>

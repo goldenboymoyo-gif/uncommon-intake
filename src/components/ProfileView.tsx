@@ -7,8 +7,10 @@ import { Button } from './Button';
 import { Card } from './Card';
 import { Chip } from './Chip';
 import { Text } from './Text';
+import { IconTile, tileColors } from './IconTile';
 import { initials, isStaff, useAuth } from '../lib/auth';
-import { callFunction } from '../lib/supabase';
+import { callFunction, supabase } from '../lib/supabase';
+import { Input } from './Input';
 import { pickAndUploadAvatar } from '../lib/avatar';
 import { colors, space } from '../theme';
 
@@ -66,6 +68,7 @@ export function ProfileView({ links }: { links: Link[] }) {
         }}
       />
       {photoError ? <Text variant="small" style={{ color: colors.danger }}>{photoError}</Text> : null}
+      {profile.role === 'student' || profile.role === 'graduate' ? <BioEditor userId={profile.id} saved={profile.bio ?? ''} onSaved={refreshProfile} /> : null}
 
       <Card style={{ gap: space.md }}>
         <Detail icon="mail" label="Email" value={profile.email} />
@@ -73,9 +76,9 @@ export function ProfileView({ links }: { links: Link[] }) {
       </Card>
 
       <View style={{ gap: space.sm }}>
-        {links.map((l) => (
+        {links.map((l, i) => (
           <Card key={l.label} onPress={() => router.push(l.href)} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-            <Feather name={l.icon} size={20} color={colors.brand} />
+            <IconTile icon={l.icon} color={tileColors[i % tileColors.length]} size={38} />
             <Text variant="bodySemi" style={{ flex: 1 }}>{l.label}</Text>
           </Card>
         ))}
@@ -119,5 +122,39 @@ function Detail({ icon, label, value }: { icon: keyof typeof Feather.glyphMap; l
         <Text>{value}</Text>
       </View>
     </View>
+  );
+}
+
+// A short bio in the student's own words, up to 500 letters.
+function BioEditor({ userId, saved, onSaved }: { userId: string; saved: string; onSaved: () => Promise<unknown> }) {
+  const [bio, setBio] = useState(saved);
+  const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const changed = bio.trim() !== saved.trim();
+
+  async function save() {
+    setBusy(true);
+    setMessage(null);
+    const { error } = await supabase.from('profiles').update({ bio: bio.trim() || null }).eq('id', userId);
+    setBusy(false);
+    if (error) return setMessage('We could not save your bio. Please try again.');
+    setMessage('Your bio is saved.');
+    await onSaved();
+  }
+
+  return (
+    <Card style={{ gap: space.sm }}>
+      <Input
+        label="Your bio"
+        multiline
+        maxLength={500}
+        value={bio}
+        onChangeText={setBio}
+        helper="A few lines about you: what you are learning, what you have built and the work you want."
+      />
+      <Text variant="small">{bio.length} / 500 letters</Text>
+      {changed ? <Button title="Save bio" icon="check" loading={busy} onPress={save} /> : null}
+      {message ? <Text variant="small">{message}</Text> : null}
+    </Card>
   );
 }

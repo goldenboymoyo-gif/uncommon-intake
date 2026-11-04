@@ -14,6 +14,7 @@ export type Profile = {
   email: string;
   hub_id: string | null;
   is_hub_lead: boolean;
+  bio?: string | null;
   staff_status: 'choosing' | 'pending' | 'rejected' | null;
   terms_accepted_at: string | null;
   avatar_path: string | null;

@@ -7,6 +7,7 @@ import { Card } from '../../../components/Card';
 import { EmptyState } from '../../../components/EmptyState';
 import { Grid } from '../../../components/Grid';
 import { Text } from '../../../components/Text';
+import { IconTile } from '../../../components/IconTile';
 import { useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, useQuery } from '../../../lib/data';
 import { supabase } from '../../../lib/supabase';
@@ -122,7 +123,7 @@ export default function OverviewScreen() {
 function Stat({ label, value, icon, accent, note }: { label: string; value?: number | null; icon: keyof typeof Feather.glyphMap; accent: string; note?: string }) {
   return (
     <Card style={{ flex: 1, gap: space.sm }}>
-      <Feather name={icon} size={20} color={accent} />
+      <IconTile icon={icon} color={accent} size={40} />
       <Text variant="h1">{note ?? value ?? 0}</Text>
       <Text variant="small">{label}</Text>
     </Card>

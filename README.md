@@ -117,8 +117,8 @@ with the name of the person who made it.
 
 **Data privacy**
 - Built around Zimbabwe's Cyber and Data Protection Act, with a full privacy notice in the app.
-- Only the data needed for the application is collected. AI receives the document or answer text it
-  needs, never contact details or ID numbers.
+- Only the data needed for the application is collected. AI receives only the document or answer text
+  it needs, and is told never to repeat contact details, ID numbers or addresses from it.
 - Row Level Security means staff only see their own hub. Files are private with expiring links.
 - Recordings are deleted after about 90 days, and anyone can delete their whole account and data.
 - AI keys and other secrets stay on the server, never in the app.

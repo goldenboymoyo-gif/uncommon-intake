@@ -6,7 +6,6 @@ import { Card } from '../../../components/Card';
 import { Chip } from '../../../components/Chip';
 import { EmptyState } from '../../../components/EmptyState';
 import { Text } from '../../../components/Text';
-import { IconTile } from '../../../components/IconTile';
 import { CoachAvatar } from '../../../components/CoachAvatar';
 import { isLearner, useAuth } from '../../../lib/auth';
 import { coachTools, CoachKind, coachTopics, CoachTopic, subjectById } from '../../../lib/coach';
@@ -54,7 +53,7 @@ export default function Coach() {
             style={{ gap: space.sm, opacity: student ? 1 : 0.7 }}
           >
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <IconTile icon={tool.icon} color={tool.accent} />
+              <Feather name={tool.icon} size={22} color={tool.accent} />
               {!student ? <Chip label="Opens when you join" /> : null}
             </View>
             <Text variant="h3">{tool.title}</Text>

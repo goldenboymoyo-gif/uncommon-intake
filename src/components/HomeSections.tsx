@@ -12,7 +12,6 @@ import { Card } from './Card';
 import { Chip } from './Chip';
 import { EmptyState } from './EmptyState';
 import { Text } from './Text';
-import { IconTile, tileColors } from './IconTile';
 
 const accents = [colors.accentOrange, colors.accentBlue, colors.accentMint];
 
@@ -71,7 +70,9 @@ export function HowItWorks() {
       <Text variant="h2">How it works</Text>
       {howItWorks.map((step, i) => (
         <View key={step.title} style={{ flexDirection: 'row', gap: space.md, alignItems: 'flex-start' }}>
-          <IconTile icon={step.icon} color={accents[i] ?? tileColors[i % tileColors.length]} />
+          <View style={{ width: 44, height: 44, borderRadius: 22, backgroundColor: colors.soft, alignItems: 'center', justifyContent: 'center' }}>
+            <Feather name={step.icon} size={20} color={accents[i]} />
+          </View>
           <View style={{ flex: 1, gap: 2 }}>
             <Text variant="bodySemi">{i + 1}. {step.title}</Text>
             <Text variant="small">{step.body}</Text>

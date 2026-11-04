@@ -7,7 +7,6 @@ import { Button } from './Button';
 import { Card } from './Card';
 import { Chip } from './Chip';
 import { Text } from './Text';
-import { IconTile, tileColors } from './IconTile';
 import { initials, isStaff, useAuth } from '../lib/auth';
 import { callFunction, supabase } from '../lib/supabase';
 import { Input } from './Input';
@@ -76,9 +75,9 @@ export function ProfileView({ links }: { links: Link[] }) {
       </Card>
 
       <View style={{ gap: space.sm }}>
-        {links.map((l, i) => (
+        {links.map((l) => (
           <Card key={l.label} onPress={() => router.push(l.href)} style={{ flexDirection: 'row', alignItems: 'center', gap: space.md }}>
-            <IconTile icon={l.icon} color={tileColors[i % tileColors.length]} size={38} />
+            <Feather name={l.icon} size={20} color={colors.brand} />
             <Text variant="bodySemi" style={{ flex: 1 }}>{l.label}</Text>
           </Card>
         ))}

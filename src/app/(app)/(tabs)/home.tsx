@@ -5,7 +5,6 @@ import { Screen } from '../../../components/Screen';
 import { Card } from '../../../components/Card';
 import { Button } from '../../../components/Button';
 import { Text } from '../../../components/Text';
-import { IconTile } from '../../../components/IconTile';
 import { GraduateStories, HowItWorks, IntakeCard } from '../../../components/HomeSections';
 import { isLearner, useAuth } from '../../../lib/auth';
 import { fetchCurrentIntake, useMyApplication, useQuery, useUnreadCount } from '../../../lib/data';
@@ -85,7 +84,7 @@ export default function Home() {
 function QuickCard({ icon, accent, title, onPress }: { icon: keyof typeof Feather.glyphMap; accent: string; title: string; onPress: () => void }) {
   return (
     <Card onPress={onPress} style={{ flex: 1, gap: space.md }}>
-      <IconTile icon={icon} color={accent} />
+      <Feather name={icon} size={22} color={accent} />
       <Text variant="bodySemi">{title}</Text>
     </Card>
   );

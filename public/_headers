@@ -1,2 +1,14 @@
 /*
   X-Robots-Tag: noai, noimageai
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Permissions-Policy: camera=(self), microphone=(self), geolocation=()
+
+# File names change whenever the code changes, so browsers can keep these for a year.
+# This makes repeat visits fast and saves data.
+/_expo/static/*
+  Cache-Control: public, max-age=31536000, immutable
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable

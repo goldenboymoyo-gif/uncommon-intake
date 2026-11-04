@@ -82,6 +82,47 @@ AI helps people. It never decides anything about a person: staff make every deci
 All AI runs on the server in Supabase Edge Functions (`supabase/functions/_shared/ai.ts`). The app
 never holds an AI key. One setting (`AI_PROVIDER`) can switch to a Hugging Face fallback.
 
+### Limitations
+
+- **Unreadable files:** scanned photos, image only PDFs and old `.doc` files cannot be read. These
+  applicants still apply and get general interview questions instead of personal ones.
+- **Speech to text:** it can mishear strong accents, mixed Shona or Ndebele and English, or noisy
+  rooms. Staff can always play the original recording.
+- **Summaries and themes:** they can miss detail or nuance. They are a starting point for staff,
+  never a replacement for reading the answers.
+- **Document check:** it can be wrong. It is told to accept a file whenever it is unsure.
+- **Cost and access:** each AI call needs internet and costs a little money. The coach has a daily
+  message limit to keep costs predictable.
+- **English Tutor:** it marks single answers; the overall score is counted by code, not by the AI.
+
+## Ethical and responsible AI
+
+**People decide, AI helps.** No AI result ever accepts, rejects, ranks or scores an applicant.
+Staff read the real answers, CV and letter, and make every decision themselves. Each decision is logged
+with the name of the person who made it.
+
+**Fairness**
+- Interview questions are written from each person's own CV and letter, so nobody is judged on a
+  standard set they were not prepared for.
+- The AI is told never to ask about or comment on age, gender, marital status, children, religion,
+  ethnicity, tribe, nationality, health, disability, politics, money or gaps in employment.
+- People with little experience are asked about learning, interests and goals, never made to feel judged.
+- There is no face, voice tone or emotion analysis.
+- A file that cannot be read never stops anyone from applying.
+
+**Transparency**
+- Applicants see what the AI does before they apply and before their interview, and agree to it.
+- Every AI result shown to staff is labelled "AI generated", and every survey theme links back to the
+  real answers it came from.
+
+**Data privacy**
+- Built around Zimbabwe's Cyber and Data Protection Act, with a full privacy notice in the app.
+- Only the data needed for the application is collected. AI receives the document or answer text it
+  needs, never contact details or ID numbers.
+- Row Level Security means staff only see their own hub. Files are private with expiring links.
+- Recordings are deleted after about 90 days, and anyone can delete their whole account and data.
+- AI keys and other secrets stay on the server, never in the app.
+
 ## How it is built
 
 | Part | Technology |

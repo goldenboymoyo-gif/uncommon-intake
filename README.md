@@ -1,142 +1,170 @@
 # Uncommon Intake
 
-A mobile app (iOS and Android only) for applying to the free Uncommon.org Technology Bootcamp,
-following an application to a decision, and supporting students once they join.
+One system for [Uncommon.org](https://uncommon.org)'s free, 12 month Technology Bootcamp in Zimbabwe:
+people apply on their phone, staff review them and decide, and accepted students get support during
+the bootcamp and after they graduate.
 
-Solo capstone project. React Native with Expo (SDK 57), TypeScript, Expo Router and Supabase.
+It works as an **Android app** and a **website** (laptops and phones). iPhone users add the website to
+their home screen. Solo capstone project.
 
-## Links
+- **Website:** https://uncommon-intake.netlify.app
+- **Android app:** tap "Download for Android" on the website
 
-- **Website** (laptop or phone browser): https://uncommon-intake.netlify.app
-  Staff sign in with their work email. Applicants and students are asked to use the phone app.
-- **Android app**: install link from the latest EAS build (see Build and release).
-- **iPhone**: Expo Go for now; App Store and TestFlight need an Apple Developer account.
+## Screenshots
 
-To update the staff website after changes: `npx expo export --platform web --output-dir dist`,
-add `dist/_redirects` with `/*    /index.html   200`, then `npx netlify-cli deploy --dir=dist --prod`.
+| Splash | Website home | Create an account | Student home |
+| --- | --- | --- | --- |
+| ![Splash](docs/screenshots/splash.png) | ![Website home](docs/screenshots/website-home.png) | ![Create an account](docs/screenshots/create-account.png) | ![Student home](docs/screenshots/student-home.png) |
+
+| CV coach | English Tutor | My progress |
+| --- | --- | --- |
+| ![CV coach](docs/screenshots/cv-coach.png) | ![English Tutor](docs/screenshots/english-tutor.png) | ![My progress](docs/screenshots/my-progress.png) |
+
+**Staff overview on a laptop**
+
+![Staff overview](docs/screenshots/staff-overview.png)
+
+## The problem
+
+Applying to the bootcamp, reviewing hundreds of applicants across 13 Innovation Hubs, and supporting
+students once they join all happened in different places. Most applicants use a phone, often on
+expensive or slow mobile data. Uncommon Intake puts all of it in one place that works on a cheap phone.
 
 ## What it does
 
-**Applicants**
-- Home: the intake with a live countdown, Uncommon's Innovation Hubs by city, real 2026 graduate
-  stories (only with written consent), and "How it works".
-- Sign up with name, phone or WhatsApp, and email. Sign in with a code sent by email. No passwords.
-- Application in 2 steps with autosave and a review screen:
-  1. Details: name, email, phone, where you live, and a hub (dropdown of the real hubs).
-  2. CV (PDF or Word, max 5MB). No CV? Write a short "about you" instead.
-- After sending, AI reads the CV and writes 5 professional interview questions about that person's
-  own experience. Written once per applicant; never about age, gender, family, religion, health,
-  background or politics.
-- Consent screen, then answers by text, audio (waveform and timer) or short video. Answers are saved
-  on the phone and uploaded when the network allows. Low data mode.
-- Two commitment questions: at the hub every weekday 9am to 4pm, and volunteering to teach coding to children.
-- Status timeline, decision in the app, by push notification and by email. "Confirm my place".
-- Profile photo, notifications, and Delete my account.
+### Applicants
+- Create an account with name, phone or WhatsApp and email. Sign in with a code sent by email, no passwords.
+- Apply in 2 steps with autosave and a review screen:
+  1. Details: name, phone, where they live, and the Innovation Hub they want.
+  2. A CV (or a short "about you" if they have no CV) and a motivation letter, as PDF or Word.
+- AI checks that each file is the right kind of document and kindly asks for the right one if not.
+  Files it cannot read are still accepted, so nobody is stopped by a technical problem.
+- AI writes 10 personal interview questions from the CV and the letter. They never ask about age,
+  gender, family, religion, tribe, health, money or politics.
+- Answer each question by typing, voice or short video. Answers are saved on the phone and upload
+  when the network allows. Low data mode.
+- Follow the application status. The decision arrives in the app, by notification and by email.
+  Accepted applicants confirm their place.
 
-**Students** (after confirming a place)
-- Career coach: CV, cover letter and job interview practice feedback, with history they can delete.
-- Surveys from instructors, with push notifications when a new one arrives.
+### Students and graduates
+- **Career coach** chat for CVs, cover letters and job interview practice, with a named coach per career.
+- **English Tutor** with a placement check, real life lessons, voice answers and Listen (read aloud).
+- **Job opportunities**, shared by staff with everyone.
+- **My progress**: attendance check in with a daily code, a weekly LinkedIn post reminder, projects and social accounts.
+- A weekly update built only from the student's real numbers.
+- Profile with photo and a short bio. Anyone can delete their own account and data.
 
-**Staff** (accounts made by an admin, never by sign up)
-- Review board with status chips, search and filters (two columns on tablets).
-- Applicant page with Interview, Application and Notes tabs: answers, transcripts, AI summaries,
-  audio and video, CV, commitments, notes. Accept, Waitlist or Decline with a confirmation screen.
-- Overview counted from real rows: applied, interviewed, accepted, places left, applications by hub.
-- Job outcomes (add, edit, delete), 2026 graduate stories (add, edit, delete, consent required).
-- Surveys (create, edit, close, delete, AI themes linked to raw answers) and messages to all students.
+### Staff, hub leads and admins
+- Staff sign up at `/staff` with an @uncommon.org email and choose a hub. Their hub lead or an admin approves them.
+- Each person only sees applicants and students from their own hub. Admins see every hub.
+- Review board with search and filters. Each applicant has Interview, Application and Notes tabs:
+  answers, video and audio, transcripts, AI summaries, CV, motivation letter and notes.
+- Accept, Waitlist or Decline. Someone on the waiting list can still be accepted or declined later.
+  Every decision is logged.
+- Overview counted only from real data: applied, interviewed, accepted, places left, applications by hub.
+- Surveys with AI themes (each theme links back to the real answers), messages to students,
+  job opportunities, job outcomes and graduate stories (shown only with written consent).
+- Delete applicant and student accounts, surveys, jobs, outcomes and stories.
 
-## Rules this codebase follows
+## How AI is used
 
-1. **No fake data.** Nothing invents people, employers, quotes, numbers or stories. Empty means an honest empty state.
-2. Graduate stories show only with `consent_given = true` and `approved_by` set.
-3. Staff numbers come only from database rows.
-4. Test accounts exist only in `scripts/dev-seed.mjs`, which refuses to run against production.
-5. Simple English everywhere, no arrows or dashes in the interface.
-6. **The AI never decides.** Feedback, questions, transcripts and summaries only, all labelled
-   "AI generated". No face, voice tone or emotion analysis. People decide.
-7. **No secrets in the app.** It holds only the public Supabase URL and publishable key.
+AI helps people. It never decides anything about a person: staff make every decision.
 
-## Project layout
+| Feature | What the AI does | Model |
+| --- | --- | --- |
+| Uploaded files | Checks a CV is a CV and a letter is a letter | `gpt-6-luna` |
+| Interview questions | Writes 10 questions from the CV and letter | `gpt-6-luna` |
+| Interview answers | Speech to text, then a short summary for staff | `gpt-transcribe`, `gpt-6-luna` |
+| Surveys | Finds common themes, each linked to the original answers | `gpt-6-luna` |
+| Career coach, English Tutor | Coaching, teaching and marking single answers | `gpt-6-luna` |
+| Listen | Reads a message aloud | `gpt-4o-mini-tts` |
+
+All AI runs on the server in Supabase Edge Functions (`supabase/functions/_shared/ai.ts`). The app
+never holds an AI key. One setting (`AI_PROVIDER`) can switch to a Hugging Face fallback.
+
+## How it is built
+
+| Part | Technology |
+| --- | --- |
+| App and website | React Native with Expo (SDK 57), TypeScript, Expo Router |
+| Database, login, files | Supabase: PostgreSQL with Row Level Security, email codes, private storage |
+| Server code | Supabase Edge Functions (Deno) |
+| Scheduled jobs | pg_cron: LinkedIn reminders, weekly updates, clean up of old recordings |
+| AI | OpenAI, called only from Edge Functions |
+| Website hosting | Netlify |
+| Android builds and updates | Expo EAS Build and EAS Update |
+
+```
+Phone or browser  ->  Supabase (login, database rules, files)
+                  ->  Edge Functions  ->  OpenAI
+```
+
+## Security and privacy
+
+- Row Level Security on every table: people only get the rows they are allowed to see.
+- CVs, letters, recordings and photos are in private storage, opened with links that expire.
+- Interview recordings are deleted after about 90 days. Transcripts and summaries stay for staff.
+- Secrets (AI key, email password) live only in Supabase. The app holds only the public Supabase URL and key.
+- The website sends security headers, ships no source maps, and asks AI crawlers not to read it.
+- The privacy notice follows Zimbabwe's Cyber and Data Protection Act.
+
+## Project structure
 
 ```
 src/
-  app/              Expo Router screens: (public), (app) for applicants and students, (staff)
-  components/       UI kit: Button, Input, Card, PillTabBar, HubPicker, CvUpload, recorders...
-  lib/              Supabase client, auth, data loading and cache, upload queue, push, avatars
-  theme.ts          Design tokens (brand blue #0747A1 from uncommon.org)
-  content.ts        Bootcamp wording copied from uncommon.org
+  app/            Screens (Expo Router)
+    (public)/     Website home, sign up, sign in, staff sign up
+    (app)/        Applicants, students and graduates
+    (staff)/      Staff, hub leads and admins
+  components/     Shared UI: buttons, cards, uploads, recorders, tab bar
+  lib/            Supabase client, login, data loading, upload queue, notifications
+  theme.ts        Colours, fonts and spacing (brand blue #0747A1)
+  content.ts      Bootcamp wording
 supabase/
-  migrations/       Schema, Row Level Security, storage, triggers, cron
-  functions/        Edge Functions; all AI runs here (_shared/ai.ts: OpenAI, Hugging Face fallback)
-  setup/            SQL templates: real intake setup, removing the test intake
-scripts/
-  dev-seed.mjs      Development only test accounts
-  expo-go.mjs       Starts the dev server for Expo Go
-assets/             App icon, splash image
+  migrations/     Database tables, access rules, storage and scheduled jobs
+  functions/      Edge Functions (all AI and server work)
+  setup/          SQL templates for setting up a real intake
+public/           Website files: icons, page template, headers, robots.txt
+scripts/          Development only test accounts and build helpers
+docs/screenshots/ Images used in this README
+assets/           App icon, splash screen and coach pictures
 ```
 
-## Run it on your phone (Expo Go)
+## Run it yourself
 
 ```bash
 npm install
-cp .env.example .env    # then fill in the two public Supabase values
-npm run go              # scan the QR code with Expo Go
-npm run go:tunnel       # if the phone can not reach your computer on Wi-Fi
+cp .env.example .env     # add your own public Supabase URL and anon key
+npx expo start           # open on a phone with a development build, or press w for the website
 ```
 
-The project is on SDK 57 because the store version of Expo Go does not support SDK 58 yet.
-Push notifications do not work in Expo Go; use an installed build for those.
-
-## Supabase
-
-Project: `piksurpdvbmcbupnopeu`. With the CLI linked (`npx supabase link --project-ref piksurpdvbmcbupnopeu`):
+Database and server code:
 
 ```bash
+npx supabase link --project-ref <your-project-ref>
 npx supabase db push
-npx supabase functions deploy <name> --use-api --project-ref piksurpdvbmcbupnopeu
+npx supabase functions deploy --use-api
 ```
 
-Edge Functions: `generate-questions`, `process-answer`, `coach-feedback`, `survey-themes`,
-`decide`, `confirm-place`, `notify-students`, `delete-account`, `purge-media`.
+Set the server secrets in the Supabase dashboard (Edge Functions, Secrets). The names are in
+`supabase/functions/.env.example`. Never commit real values.
 
-Secrets (Dashboard: Edge Functions, Secrets). Never commit them:
-
-| Secret | What it is |
-| --- | --- |
-| `AI_PROVIDER` | `openai` (or `huggingface`) |
-| `OPENAI_API_KEY`, `OPENAI_MODEL`, `OPENAI_TRANSCRIBE_MODEL` | AI (currently `gpt-6-luna` and `gpt-transcribe`) |
-| `OPENAI_TTS_MODEL` | Optional. The voice for Listen in the English Tutor (default `gpt-4o-mini-tts`) |
-| `HF_TOKEN`, `HF_MODEL`, `HF_TRANSCRIBE_MODEL` | Optional Hugging Face fallback |
-| `RESEND_API_KEY`, `EMAIL_FROM` | Decision emails |
-| `CRON_SECRET` | Daily recording clean up, LinkedIn reminders and weekly updates (also `cron_secret` and `project_url` in Vault) |
-
-Sign in codes are sent through custom SMTP (Authentication, Emails, SMTP Settings) using the Gmail
-account `uncommonintake.app@gmail.com` with an app password. Both email templates show `{{ .Token }}`.
-
-Make the first admin in the SQL editor: `update profiles set role = 'admin', hub_id = null where email = '...';`. Admins set up each hub lead on Overview, Staff accounts. New staff sign up at `/staff` with an @uncommon.org email, and their hub lead or an admin approves them.
-
-The real intake, hubs and checklist: see `supabase/setup/intake_setup_template.sql`.
-Before 1 November 2026, remove the test intake with `supabase/setup/remove_test_intake.sql`.
-
-## Build and release (EAS)
+Builds:
 
 ```bash
-npx eas-cli build --platform android --profile preview      # installable APK
-npx eas-cli update --channel preview --environment preview  # over the air update for code only changes
+npx eas-cli build --platform android --profile preview     # Android APK
+npx eas-cli update --channel preview --environment preview # update installed apps
+npx expo export -p web                                      # website files for Netlify
 ```
 
-- EAS project `@brightmoyo3/uncommon-intake`. Public Supabase values come from EAS environment variables.
-- Android push uses Firebase project `uncommon-intake-zw26`. `google-services.json` is not in git;
-  builds get it from the `GOOGLE_SERVICES_JSON` EAS file variable. The FCM V1 key is uploaded with
-  `npx eas-cli credentials -p android`.
-- iOS needs an Apple Developer account, then `--platform ios --profile production` and TestFlight.
+## Rules the project follows
 
-## Privacy and security
+1. **No fake data.** Empty means an honest empty state, never invented people or numbers.
+2. **People decide, AI helps.** Every AI result is labelled.
+3. **No secrets in the app.**
+4. **Simple English** that works for first time applicants.
+5. **Works on low data** and on cheap phones.
 
-- Row Level Security on every table; column limits so applicants can not change review fields or AI text.
-- Private storage buckets with expiring links; recordings deleted after about 90 days.
-- Sessions stored in the phone's secure storage; no passwords.
-- Every request has a time limit; the app never waits forever.
-- The privacy notice (`src/components/PrivacyNotice.tsx`) follows Zimbabwe's Cyber and Data
-  Protection Act. Have it reviewed by Uncommon's legal adviser, and register with POTRAZ as a
-  data controller before launch.
+## License
+
+MIT. See [LICENSE](LICENSE).

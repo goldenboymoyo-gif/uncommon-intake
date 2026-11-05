@@ -10,6 +10,7 @@ their home screen. Solo capstone project.
 - **Website:** https://uncommon-intake.netlify.app
 - **Backend repository:** https://github.com/goldenboymoyo-gif/uncommon-intake-backend
 - **Project scope:** [PROJECT_SCOPE.md](PROJECT_SCOPE.md)
+- **Capstone documents (PDF):** [Project scope](docs/capstone/Uncommon_Intake_Project_Scope_Bright_Moyo.pdf), [Proposal (revised)](docs/capstone/Capstone_Proposal_Bright_Moyo_Uncommon_Intake_Revised.pdf)
 - **Android app:** tap "Download for Android" on the website
 
 ## Screenshots

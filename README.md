@@ -8,6 +8,8 @@ It works as an **Android app** and a **website** (laptops and phones). iPhone us
 their home screen. Solo capstone project.
 
 - **Website:** https://uncommon-intake.netlify.app
+- **Backend repository:** https://github.com/goldenboymoyo-gif/uncommon-intake-backend
+- **Project scope:** [PROJECT_SCOPE.md](PROJECT_SCOPE.md)
 - **Android app:** tap "Download for Android" on the website
 
 ## Screenshots
